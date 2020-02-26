@@ -1,13 +1,12 @@
 package com.ccsu.feng.test.config;
 
+import com.ccsu.feng.test.interceptor.AdminUserLoginInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.*;
 
 import javax.servlet.MultipartConfigElement;
 
@@ -30,15 +29,48 @@ public class WebAppConfig  implements WebMvcConfigurer {
         return factory.createMultipartConfig();
     }
 
+
+    @Bean
+    public HandlerInterceptor getAdminUserLoginInterceptor(){
+        return new AdminUserLoginInterceptor();
+    }
+
     @Override
     public void addViewControllers( ViewControllerRegistry registry ) {
-        registry.addViewController("/").setViewName("/page/index");
-        registry.addViewController("/page/xi/person").setViewName("/page/xi/person");
-        registry.addViewController("/page/xi/weapon").setViewName("/page/xi/weapon");
-        registry.addViewController("/page/xi/place").setViewName("/page/xi/place");
-        registry.addViewController("/page/xi/deeds").setViewName("/page/xi/deeds");
-        registry.addViewController("/page/home").setViewName("/page/home");
+        registry.addViewController("/admin").setViewName("/admin/index");
+        registry.addViewController("/admin/index").setViewName("/admin/index");
+        registry.addViewController("/admin/login").setViewName("/admin/login");
+        registry.addViewController("/admin/xi/person").setViewName("/admin/xi/person");
+        registry.addViewController("/admin/xi/weapon").setViewName("/admin/xi/weapon");
+        registry.addViewController("/admin/xi/place").setViewName("/admin/xi/place");
+        registry.addViewController("/admin/xi/deeds").setViewName("/admin/xi/deeds");
+        registry.addViewController("/admin/xi/relation").setViewName("/admin/xi/relation");
+        registry.addViewController("/admin/home").setViewName("/admin/home");
+        registry.addViewController("/login").setViewName("/page/login");
+        registry.addViewController("/").setViewName("/page/login");
+        registry.addViewController("/register").setViewName("/page/register");
+
     }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 注册拦截器
+        InterceptorRegistration loginRegistry = registry.addInterceptor(getAdminUserLoginInterceptor());
+        // 拦截路径
+        loginRegistry.addPathPatterns("/admin/**");
+        loginRegistry.excludePathPatterns("/admin/login");
+        loginRegistry.excludePathPatterns("/admin/loginOut");
+
+//        // 排除路径
+//        loginRegistry.excludePathPatterns("/");
+//        loginRegistry.excludePathPatterns("/login");
+//        loginRegistry.excludePathPatterns("/register");
+//        loginRegistry.excludePathPatterns("/loginout");
+//        // 排除资源请求
+//        loginRegistry.excludePathPatterns("/common/**");
+//        loginRegistry.excludePathPatterns("/admin/**");
+    }
+
 
 
 }

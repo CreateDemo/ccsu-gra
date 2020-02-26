@@ -9,11 +9,13 @@ import lombok.Data;
 @Data
 public class PersonRelationshipVO {
 
+    private String startName;
+
     private String preName; //关系名称
 
     private String sufName;
 
-    private String startName;
+
 
     private String endName;
 }

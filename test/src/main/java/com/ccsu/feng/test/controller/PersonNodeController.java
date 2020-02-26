@@ -1,11 +1,11 @@
 package com.ccsu.feng.test.controller;
 
 import com.ccsu.feng.test.domain.base.BaseRelationship;
-import com.ccsu.feng.test.domain.node.xinode.PersonNode;
+import com.ccsu.feng.test.domain.node.PersonNode;
 import com.ccsu.feng.test.domain.vo.PersonRelationshipVO;
 import com.ccsu.feng.test.domain.vo.PersonVO;
 import com.ccsu.feng.test.enums.ResultEnum;
-import com.ccsu.feng.test.service.IPersonNodeService;
+import com.ccsu.feng.test.service.node.IPersonNodeService;
 import com.ccsu.feng.test.utils.PageResult;
 import com.ccsu.feng.test.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.util.Optional;
  * @create 2020-02-11-20:51
  */
 @RestController
-@RequestMapping("/personNode")
+@RequestMapping("/admin/personNode")
 public class PersonNodeController {
 
     @Autowired
@@ -32,28 +32,33 @@ public class PersonNodeController {
         if (node != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
 
 
     @GetMapping("/getPersonNodeByPage")
-    public Result<PageResult> getPersonNodeByPage(@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize) {
-        PageResult<PersonVO> listPersonNodeByPage = iPersonNodeService.getListPersonNodeByPage(pageIndex, pageSize);
+    public Result<PageResult> getPersonNodeByPage(@Param("pageIndex") int pageIndex,
+                                                  @Param("pageSize") int pageSize,
+                                                  @Param("type")String type) {
+        PageResult<PersonVO> listPersonNodeByPage = iPersonNodeService.getListPersonNodeByPage(pageIndex, pageSize,type);
         if (listPersonNodeByPage != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), listPersonNodeByPage);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
 
     @GetMapping("/getListPersonNodeByPageAndName")
-    public Result<PageResult> getListPersonNodeByPageAndName(@Param("name") String name, @Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize) {
-        PageResult<PersonVO> listPersonNodeByPage = iPersonNodeService.getListPersonNodeByPageAndName(name, pageIndex, pageSize);
+    public Result<PageResult> getListPersonNodeByPageAndName(@Param("name") String name,
+                                                             @Param("pageIndex") int pageIndex,
+                                                             @Param("pageSize") int pageSize,
+                                                             @Param("type") String type) {
+        PageResult<PersonVO> listPersonNodeByPage = iPersonNodeService.getListPersonNodeByPageAndName(name, pageIndex, pageSize,type);
         if (listPersonNodeByPage != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), listPersonNodeByPage);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -64,7 +69,7 @@ public class PersonNodeController {
         if (node.isPresent()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -81,7 +86,7 @@ public class PersonNodeController {
         if (node != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -98,7 +103,7 @@ public class PersonNodeController {
         if (baseRelationship != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), baseRelationship);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -115,7 +120,7 @@ public class PersonNodeController {
         if (!list.isEmpty()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), list);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -126,7 +131,7 @@ public class PersonNodeController {
         if (personNodeRelationship != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), personNodeRelationship);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -139,12 +144,15 @@ public class PersonNodeController {
     @PostMapping(path = "/addPersonNodeWeaponNode")
     public Result<List<BaseRelationship>> addPersonNodeWeaponNode(@RequestBody PersonRelationshipVO vo) {
         List<BaseRelationship> list = iPersonNodeService
-                .addPersonNodeWeapon(vo.getPreName(), vo.getStartName(), vo.getEndName());
+                .addPersonNodeWeapon(vo.getStartName(), vo.getEndName());
         if (!list.isEmpty()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), list);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
+
+
+
 
 }

@@ -17,7 +17,7 @@ import java.util.Date;
  * @create 2020-02-19-19:24
  */
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/admin/file")
 public class FileController {
 
     public static final String HOST_URL = "http://liaoyunfeng.top/images/";

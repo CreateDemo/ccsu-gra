@@ -61,12 +61,12 @@ layui.define(function(exports){
     
     //当前页非首页，则输出上一页
     if(conf.curr > 1 && conf.prev){
-      view.push('<a href="javascript:;" class="layui-laypage-prev" data-page="'+ (conf.curr - 1) +'">'+ conf.prev +'</a>');
+      view.push('<a href="javascript:;" class="layui-laypage-prev" data-admin="'+ (conf.curr - 1) +'">'+ conf.prev +'</a>');
     }
     
     //当前组非首组，则输出首页
     if(dict.index > 1 && conf.first && conf.groups !== 0){
-      view.push('<a href="javascript:;" class="laypage_first" data-page="1"  title="&#x9996;&#x9875;">'+ conf.first +'</a><span>&#x2026;</span>');
+      view.push('<a href="javascript:;" class="laypage_first" data-admin="1"  title="&#x9996;&#x9875;">'+ conf.first +'</a><span>&#x2026;</span>');
     }
     
     //输出当前页组
@@ -83,13 +83,13 @@ layui.define(function(exports){
       if(dict.start === conf.curr){
         view.push('<span class="layui-laypage-curr"><em class="layui-laypage-em" '+ (/^#/.test(conf.skin) ? 'style="background-color:'+ conf.skin +';' : '') +'"></em><em>'+ dict.start +'</em></span>');
       } else {
-        view.push('<a href="javascript:;" data-page="'+ dict.start +'">'+ dict.start +'</a>');
+        view.push('<a href="javascript:;" data-admin="'+ dict.start +'">'+ dict.start +'</a>');
       }
     }
     
     //总页数大于连续分页数，且当前组最大页小于总页，输出尾页
     if(conf.pages > conf.groups && dict.end < conf.pages && conf.last && conf.groups !== 0){
-       view.push('<span>&#x2026;</span><a href="javascript:;" class="layui-laypage-last" title="&#x5C3E;&#x9875;"  data-page="'+ conf.pages +'">'+ conf.last +'</a>');
+       view.push('<span>&#x2026;</span><a href="javascript:;" class="layui-laypage-last" title="&#x5C3E;&#x9875;"  data-admin="'+ conf.pages +'">'+ conf.last +'</a>');
     }
     
     //当前页不为尾页时，输出下一页
@@ -98,7 +98,7 @@ layui.define(function(exports){
       view.push((function(){
         return (dict.flow && conf.curr === conf.pages) 
         ? '<span class="layui-laypage-nomore" title="&#x5DF2;&#x6CA1;&#x6709;&#x66F4;&#x591A;">'+ conf.next +'</span>'
-        : '<a href="javascript:;" class="layui-laypage-next" data-page="'+ (conf.curr + 1) +'">'+ conf.next +'</a>';
+        : '<a href="javascript:;" class="layui-laypage-next" data-admin="'+ (conf.curr + 1) +'">'+ conf.next +'</a>';
       }()));
     }
 
@@ -121,7 +121,7 @@ layui.define(function(exports){
     for(var i = 0, len = childs.length; i < len; i++){
       if(childs[i].nodeName.toLowerCase() === 'a'){
         Page.on(childs[i], 'click', function(){
-          var curr = this.getAttribute('data-page')|0;
+          var curr = this.getAttribute('data-admin')|0;
           conf.curr = curr;
           that.render();
           

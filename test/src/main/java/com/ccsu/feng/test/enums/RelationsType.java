@@ -7,11 +7,14 @@ package com.ccsu.feng.test.enums;
 public enum RelationsType {
 
 
-
+    /**
+     *
+     */
+     PERSON_TO_WEAPON("拥有"),
     /**
      * 武器属于
      */
-    WEAPON_REF("属于"),
+    WEAPON_REF("()属于"),
 
     /**
      * 地点 含有些事迹  一对多
@@ -19,16 +22,14 @@ public enum RelationsType {
     PLACE_REF("含有"),
 
     /**
-     * 事迹包含哪些人物，一对多
+     * 事件包含哪些人物，一对多
      */
     DEEDS_REF_PERSON("含有"),
 
     /**
-     * 地点属于那个地点的。一对一
+     * 事件属于那个地点的。一对一
      */
     DEEDS_REF_PLACE("属于");
-
-
 
 //
 //    APPRENTICE("徒弟"),

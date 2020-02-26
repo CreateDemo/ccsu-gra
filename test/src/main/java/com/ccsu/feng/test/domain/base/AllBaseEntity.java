@@ -8,7 +8,6 @@ import org.neo4j.ogm.annotation.Id;
  * @author admin
  * @create 2020-02-09-14:35
  */
-@Data
 public  abstract  class AllBaseEntity {
 
     /**
@@ -18,6 +17,15 @@ public  abstract  class AllBaseEntity {
     @Id
     @GeneratedValue
     private Long id;
+
+
+    public Long getId(){
+        return id;
+    }
+
+    public void  setId(Long id){
+        this.id=id;
+    }
 
     @Override
     public boolean equals(Object obj) {

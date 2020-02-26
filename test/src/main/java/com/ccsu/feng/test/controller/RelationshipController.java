@@ -1,13 +1,17 @@
 package com.ccsu.feng.test.controller;
 
 import com.ccsu.feng.test.domain.base.BaseRelationship;
+import com.ccsu.feng.test.domain.vo.ListRelationVO;
 import com.ccsu.feng.test.enums.ResultEnum;
-import com.ccsu.feng.test.service.IBaseRelationshipService;
+import com.ccsu.feng.test.service.node.IBaseRelationshipService;
+import com.ccsu.feng.test.utils.PageResult;
 import com.ccsu.feng.test.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -15,7 +19,7 @@ import java.util.Optional;
  * @create 2020-02-12-18:02
  */
 @RestController
-@RequestMapping("/relation")
+@RequestMapping("/admin/relation")
 public class RelationshipController {
 
     @Autowired
@@ -28,7 +32,17 @@ public class RelationshipController {
         if (node != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+        }
+    }
+
+    @PostMapping("/updateRelationById")
+    public Result<Boolean> updateRelationById(@RequestParam ("id")Long id,@RequestParam("name") String name) {
+        Boolean node = iBaseRelationshipService.updateRelationById(id,name);
+        if (node) {
+            return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
+        } else {
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -38,9 +52,12 @@ public class RelationshipController {
         if (node.isPresent()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
     }
+
+
+
 
     @DeleteMapping("/deleteRelationshipById")
     public Result<Boolean> deleteRelationshipById(@Param("id") Long id) {
@@ -48,4 +65,25 @@ public class RelationshipController {
     }
 
 
+
+    @GetMapping("/findNodeName")
+    public Result<List<Map<String,String>>> findPersonNodeName(String nodeType, String type) {
+        List<Map<String,String>> node = iBaseRelationshipService.findNodeName(nodeType,type);
+        if (node!=null) {
+            return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
+        } else {
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+        }
+    }
+
+
+    @GetMapping("/getBaseRelationshipByPage")
+    public Result<PageResult> getBaseRelationshipByPage(@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize) {
+        PageResult<ListRelationVO> listRelationByPage = iBaseRelationshipService.getListRelationByPage(pageIndex, pageSize);
+        if (listRelationByPage != null) {
+            return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), listRelationByPage);
+        } else {
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+        }
+    }
 }

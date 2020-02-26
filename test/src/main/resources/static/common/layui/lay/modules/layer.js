@@ -21,7 +21,7 @@ var $, win, ready = {
   btn: ['&#x786E;&#x5B9A;','&#x53D6;&#x6D88;'],
   
   //五种原始层模式
-  type: ['dialog', 'page', 'iframe', 'loading', 'tips']
+  type: ['dialog', 'admin', 'iframe', 'loading', 'tips']
 };
 
 //默认内置方法。
@@ -691,7 +691,7 @@ layer.min = function(index, options){
   ready.record(layero);
   layer.style(index, {width: 180, height: titHeight, overflow: 'hidden'});
   layero.find('.layui-layer-min').hide();
-  layero.attr('type') === 'page' && layero.find(doms[4]).hide();
+  layero.attr('type') === 'admin' && layero.find(doms[4]).hide();
   ready.rescollbar(index);
 };
 
@@ -708,7 +708,7 @@ layer.restore = function(index){
   });
   layero.find('.layui-layer-max').removeClass('layui-layer-maxmin');
   layero.find('.layui-layer-min').show();
-  layero.attr('type') === 'page' && layero.find(doms[4]).show();
+  layero.attr('type') === 'admin' && layero.find(doms[4]).show();
   ready.rescollbar(index);
 };
 

@@ -6,8 +6,6 @@ package com.ccsu.feng.test.exception;
  */
 public class BaseException extends RuntimeException {
 
-
-
     public BaseException() {
     }
 

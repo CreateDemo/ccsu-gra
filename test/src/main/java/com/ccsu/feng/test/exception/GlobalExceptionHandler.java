@@ -17,6 +17,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public Result globalExceptionHandler(Exception e){
         log.error("相关异常-->{}",e.getMessage());
-       return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+       return Result.error(ResultEnum.ERROR.getCode(),e.getMessage());
     }
 }

@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 @Data
 public class Result<T> implements Serializable {
+
     /**
      * 错误码
      */

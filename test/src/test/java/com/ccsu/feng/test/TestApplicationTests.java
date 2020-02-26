@@ -1,7 +1,8 @@
 package com.ccsu.feng.test;
 
-import com.ccsu.feng.test.domain.node.xinode.PersonNode;
-import com.ccsu.feng.test.service.IPersonNodeService;
+import com.ccsu.feng.test.service.node.IPersonNodeService;
+import com.ccsu.feng.test.utils.RedisUtil;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +16,13 @@ public class TestApplicationTests {
     @Autowired
     IPersonNodeService iPersonNodeService;
 
+    @Autowired
+    RedisUtil redisUtil;
+
     @Test
     public void contextLoads() {
-        PersonNode p =new PersonNode();
-        p.setName("孙悟空");
-        p.setAlias("齐天大圣");
-        p.setCharacter("泼辣顽皮");
-        p.setContent("孙悟空是。。。。");
-        PersonNode personNode = iPersonNodeService.addPersonNode(p);
-        if (personNode!=null){
-            System.out.println("添加成功");
-        }
+        boolean flag = redisUtil.set("廖云锋", "你好！");
+        Assert.assertEquals(flag,true);
 
     }
 

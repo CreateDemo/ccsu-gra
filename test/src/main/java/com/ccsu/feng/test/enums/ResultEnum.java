@@ -9,8 +9,8 @@ public enum ResultEnum {
 
     SUCCESS("200", "成功"),
     ERROR("500", "服务器出错"),
-    WAIT("1111", "正在处理结果");
-
+    WAIT("1111", "正在处理结果"),
+    ADMIN_NOT_USER("10001","用户名或密码错误");
     private String code;
 
     private String msg;

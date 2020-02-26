@@ -1,5 +1,6 @@
 package com.ccsu.feng.test.repository;
 
+import com.ccsu.feng.test.domain.base.BaseNode;
 import com.ccsu.feng.test.domain.base.BaseRelationship;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
@@ -15,8 +16,19 @@ import java.util.List;
 @Repository
 public interface BaseRelationshipRepository extends Neo4jRepository<BaseRelationship, Long> {
 
-    BaseRelationship getBaseRelationshipByName(String name);
+    @Query("MATCH p=(n:BaseNode)-[r:Ref]->(m:BaseNode) WHERE n.name={name}  RETURN r")
+    BaseRelationship getBaseRelationshipByName(@Param("name") String name);
+
+
+    @Query("MATCH  ()-[r:Ref]->() RETURN count(r)")
+    Long getBaseRelationshipCount();
+
+    @Query("MATCH ()-[r:Ref]->() where id(r)={id}  set r.name={name} RETURN r ")
+    void updateRelationById(@Param("id") Long id,@Param("name") String name);
+
 
     @Query("MATCH p=(n:BaseNode)-[r:Ref]->(m:BaseNode) WHERE r.name={name}  and n.name={startName} and m.name={endName} RETURN r")
     List<BaseRelationship> findRelationshipByStarNameAndEndName(@Param("name") String name, @Param("startName") String startName, @Param("endName") String endName);
+
+
 }

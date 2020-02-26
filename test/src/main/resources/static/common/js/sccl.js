@@ -396,11 +396,11 @@ $(function(){
 	/*菜单json*/
 	var menu = [{"id":"1","name":"主菜单","parentId":"0","url":"","icon":"","order":"1","isHeader":"1","childMenus":[
 					{"id":"3","name":"西游记","parentId":"1","url":"","icon":"&#xe620;","order":"1","isHeader":"0","childMenus":[
-						{"id":"4","name":"人物管理(西)","parentId":"3","url":"/page/xi/person","icon":"","order":"1","isHeader":"0","childMenus":""},
-							{"id":"5","name":"武器管理(西)","parentId":"3","url":"/page/xi/weapon","icon":"","order":"1","isHeader":"0","childMenus":""},
-						{"id":"6","name":"地点管理(西)","parentId":"3","url":"/page/xi/place","icon":"","order":"1","isHeader":"0","childMenus":""},
-						{"id":"7","name":"事迹管理(西)","parentId":"3","url":"/page/xi/deeds","icon":"","order":"1","isHeader":"0","childMenus":""},
-                            {"id":"8","name":"关系管理(西)","parentId":"3","url":"/page/xi/relation","icon":"","order":"1","isHeader":"0","childMenus":""}
+						{"id":"4","name":"人物管理(西)","parentId":"3","url":"/admin/xi/person","icon":"","order":"1","isHeader":"0","childMenus":""},
+							{"id":"5","name":"武器管理(西)","parentId":"3","url":"/admin/xi/weapon","icon":"","order":"1","isHeader":"0","childMenus":""},
+						{"id":"6","name":"地点管理(西)","parentId":"3","url":"/admin/xi/place","icon":"","order":"1","isHeader":"0","childMenus":""},
+						{"id":"7","name":"事件管理(西)","parentId":"3","url":"/admin/xi/deeds","icon":"","order":"1","isHeader":"0","childMenus":""},
+                            {"id":"8","name":"关系管理(西)","parentId":"3","url":"/admin/xi/relation","icon":"","order":"1","isHeader":"0","childMenus":""}
 					]},
 
 					{"id":"6","name":"订单管理","parentId":"1","url":"","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":[

@@ -1,10 +1,9 @@
 package com.ccsu.feng.test.controller;
 
-import com.ccsu.feng.test.domain.node.xinode.WeaponNode;
-import com.ccsu.feng.test.domain.vo.PersonVO;
+import com.ccsu.feng.test.domain.node.WeaponNode;
 import com.ccsu.feng.test.domain.vo.WeaponVO;
 import com.ccsu.feng.test.enums.ResultEnum;
-import com.ccsu.feng.test.service.IWeaponNodeService;
+import com.ccsu.feng.test.service.node.IWeaponNodeService;
 import com.ccsu.feng.test.utils.PageResult;
 import com.ccsu.feng.test.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import java.util.Optional;
  * @create 2020-02-11-21:26
  */
 @RestController
-@RequestMapping("/weaponNode")
+@RequestMapping("/admin/weaponNode")
 public class WeaponNodeController {
     @Autowired
     private IWeaponNodeService iWeaponNodeService;
@@ -30,7 +29,7 @@ public class WeaponNodeController {
         if (node != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -41,7 +40,7 @@ public class WeaponNodeController {
         if (node != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -51,7 +50,7 @@ public class WeaponNodeController {
         if (node.isPresent()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -64,22 +63,27 @@ public class WeaponNodeController {
 
 
     @GetMapping("/getWeaponNodeByPage")
-    public Result<PageResult> getWeaponNodeByPage(@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize) {
-        PageResult<WeaponVO> listWeaponNodeByPage = iWeaponNodeService.getListWeaponNodeByPage(pageIndex, pageSize);
+    public Result<PageResult> getWeaponNodeByPage(@Param("pageIndex") int pageIndex,
+                                                  @Param("pageSize") int pageSize,
+                                                  @Param("type") String type) {
+        PageResult<WeaponVO> listWeaponNodeByPage = iWeaponNodeService.getListWeaponNodeByPage(pageIndex, pageSize, type);
         if (listWeaponNodeByPage != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), listWeaponNodeByPage);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
         }
     }
 
     @GetMapping("/getListWeaponNodeByPageAndName")
-    public Result<PageResult> getListWeaponNodeByPageAndName(@Param("name") String name, @Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize) {
-        PageResult<WeaponVO> listWeaponNodeByPageAndName = iWeaponNodeService.getListWeaponNodeByPageAndName(name, pageIndex, pageSize);
+    public Result<PageResult> getListWeaponNodeByPageAndName(@Param("name") String name,
+                                                             @Param("pageIndex") int pageIndex,
+                                                             @Param("pageSize") int pageSize,
+                                                             @Param("type") String type) {
+        PageResult<WeaponVO> listWeaponNodeByPageAndName = iWeaponNodeService.getListWeaponNodeByPageAndName(name, pageIndex, pageSize, type);
         if (listWeaponNodeByPageAndName != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), listWeaponNodeByPageAndName);
         } else {
-            return Result.error(ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
         }
     }
 
