@@ -99,7 +99,7 @@ public class PersonNodeController {
     @PostMapping("/addPersonNodeRelationship")
     public Result<BaseRelationship> addPersonNodeRelationship(@RequestBody PersonRelationshipVO vo) {
         BaseRelationship baseRelationship = iPersonNodeService
-                .addPersonNodeRelationship(vo.getPreName(), vo.getStartName(), vo.getEndName());
+                .addPersonNodeRelationship(vo.getPreName(), vo.getStartName(), vo.getEndName(),vo.getType());
         if (baseRelationship != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), baseRelationship);
         } else {
@@ -116,7 +116,7 @@ public class PersonNodeController {
     @PostMapping("/addTwoPersonRelationship")
     public Result<List<BaseRelationship>> addTwoPersonRelationship(@RequestBody PersonRelationshipVO vo) {
         List<BaseRelationship> list = iPersonNodeService
-                .addTwoPersonNodeRelationship(vo.getPreName(), vo.getSufName(), vo.getStartName(), vo.getEndName());
+                .addTwoPersonNodeRelationship(vo.getPreName(), vo.getSufName(), vo.getStartName(), vo.getEndName(),vo.getType());
         if (!list.isEmpty()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), list);
         } else {
@@ -144,7 +144,7 @@ public class PersonNodeController {
     @PostMapping(path = "/addPersonNodeWeaponNode")
     public Result<List<BaseRelationship>> addPersonNodeWeaponNode(@RequestBody PersonRelationshipVO vo) {
         List<BaseRelationship> list = iPersonNodeService
-                .addPersonNodeWeapon(vo.getStartName(), vo.getEndName());
+                .addPersonNodeWeapon(vo.getStartName(), vo.getEndName(),vo.getType());
         if (!list.isEmpty()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), list);
         } else {

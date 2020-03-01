@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author admin
@@ -92,7 +93,6 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
         return null;
     }
 
-
     @Override
     public Optional<BaseRelationship> findRelationshipById(Long id) {
         if (id == null) {
@@ -150,16 +150,21 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
     }
 
     @Override
-    public PageResult<ListRelationVO> getListRelationByPage(int pageIndex, int pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        Page<BaseRelationship> page = relationshipRepository.findAll(pageable);
+    public PageResult<ListRelationVO> getListRelationByPage(int pageIndex, int pageSize,String type) {
+        int pageIndexNum = 0;
+        if (pageIndex > 1) {
+            pageIndexNum = (pageIndex - 1) * pageSize;
+        }
+        Iterable<BaseRelationship> all = relationshipRepository.findAll();
+        List<BaseRelationship> listRelationshipByPage = relationshipRepository.getListRelationshipByPage(pageIndexNum, pageSize, type);
         List<ListRelationVO> list = new ArrayList<>();
-        for (BaseRelationship relationship : page.getContent()) {
+        for (BaseRelationship relationship : listRelationshipByPage) {
             ListRelationVO listRelationVO = new ListRelationVO(relationship);
             list.add(listRelationVO);
         }
         log.info("pageIndex->{},pageSize->{}", pageIndex, pageSize);
-        return new PageResult<>(pageIndex, pageSize, relationshipRepository.getBaseRelationshipCount(), list);
+        return new PageResult<>(pageIndex, pageSize, relationshipRepository.getBaseRelationshipCount(type), list);
 
     }
+
 }

@@ -32,17 +32,17 @@ public class RelationshipController {
         if (node != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
         }
     }
 
     @PostMapping("/updateRelationById")
-    public Result<Boolean> updateRelationById(@RequestParam ("id")Long id,@RequestParam("name") String name) {
-        Boolean node = iBaseRelationshipService.updateRelationById(id,name);
+    public Result<Boolean> updateRelationById(@RequestParam("id") Long id, @RequestParam("name") String name) {
+        Boolean node = iBaseRelationshipService.updateRelationById(id, name);
         if (node) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
         }
     }
 
@@ -52,11 +52,9 @@ public class RelationshipController {
         if (node.isPresent()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
         }
     }
-
-
 
 
     @DeleteMapping("/deleteRelationshipById")
@@ -65,25 +63,26 @@ public class RelationshipController {
     }
 
 
-
     @GetMapping("/findNodeName")
-    public Result<List<Map<String,String>>> findPersonNodeName(String nodeType, String type) {
-        List<Map<String,String>> node = iBaseRelationshipService.findNodeName(nodeType,type);
-        if (node!=null) {
+    public Result<List<Map<String, String>>> findPersonNodeName(String nodeType, String type) {
+        List<Map<String, String>> node = iBaseRelationshipService.findNodeName(nodeType, type);
+        if (node != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
-            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
         }
     }
 
 
     @GetMapping("/getBaseRelationshipByPage")
-    public Result<PageResult> getBaseRelationshipByPage(@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize) {
-        PageResult<ListRelationVO> listRelationByPage = iBaseRelationshipService.getListRelationByPage(pageIndex, pageSize);
+    public Result<PageResult> getBaseRelationshipByPage(@Param("pageIndex") int pageIndex,
+                                                        @Param("pageSize") int pageSize,
+                                                        @Param("type") String type) {
+        PageResult<ListRelationVO> listRelationByPage = iBaseRelationshipService.getListRelationByPage(pageIndex, pageSize, type);
         if (listRelationByPage != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), listRelationByPage);
         } else {
-            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
         }
     }
 }

@@ -50,7 +50,6 @@ public class DeedsNodeServiceImpl implements IDeedsNodeService {
         if (deedsNode == null) {
             return null;
         }
-
         return deedsNodeRepository.save(deedsNode);
     }
 
@@ -74,12 +73,13 @@ public class DeedsNodeServiceImpl implements IDeedsNodeService {
     }
 
     @Override
-    public DeedsNode addDeedsNodeByName(String name) {
+    public DeedsNode addDeedsNodeByName(String name,String type) {
         if (StringUtils.isEmpty(name)) {
             return null;
         }
         DeedsNode deedsNode = new DeedsNode();
         deedsNode.setName(name);
+        deedsNode.setType(type);
         return deedsNodeRepository.save(deedsNode);
 
     }
@@ -92,29 +92,29 @@ public class DeedsNodeServiceImpl implements IDeedsNodeService {
 
 
     @Override
-    public List<BaseRelationship> addDeedsPersonRelationship(String startName, Set<String> names) {
+    public List<BaseRelationship> addDeedsPersonRelationship(String startName, Set<String> names,String type) {
         List<BaseRelationship> list = new ArrayList<>();
         DeedsNode startDeedsNode = getDeedsNodeByName(startName);
         if (startDeedsNode == null) {
-            startDeedsNode = addDeedsNodeByName(startName);
+            startDeedsNode = addDeedsNodeByName(startName,type);
         }
 
         for (String name : names) {
-            list.add(addaddDeedsPersonRelationship(startDeedsNode, name));
+            list.add(addaddDeedsPersonRelationship(startDeedsNode, name,type));
         }
         return list;
     }
 
 
     @Override
-    public List<BaseRelationship> addDeedsPlaceRelationship(String startName, Set<String> names) {
+    public List<BaseRelationship> addDeedsPlaceRelationship(String startName, Set<String> names,String type) {
         List<BaseRelationship> list = new ArrayList<>();
         DeedsNode startDeedsNode = getDeedsNodeByName(startName);
         if (startDeedsNode == null) {
-            startDeedsNode = addDeedsNodeByName(startName);
+            startDeedsNode = addDeedsNodeByName(startName,type);
         }
         for (String name : names) {
-            list.add(addaddDeedsPlaceRelationship(startDeedsNode, name));
+            list.add(addaddDeedsPlaceRelationship(startDeedsNode, name,type));
         }
 
         return list;
@@ -155,7 +155,7 @@ public class DeedsNodeServiceImpl implements IDeedsNodeService {
         return new PageResult<>(pageIndex, pageSize, deedsNodeRepository.getDeedsNodeCountByName(type, name), list);
     }
 
-    private BaseRelationship addaddDeedsPlaceRelationship(DeedsNode startDeedsNode, String endName) {
+    private BaseRelationship addaddDeedsPlaceRelationship(DeedsNode startDeedsNode, String endName,String  type) {
         PlaceNode endPlaceNode = placeNodeService.getPlaceNodeByName(endName);
         if (endPlaceNode != null) { // 1.地点节点存在
             BaseRelationship relationship = relationshipService
@@ -164,7 +164,7 @@ public class DeedsNodeServiceImpl implements IDeedsNodeService {
                 return relationship;
             }
         } else {
-            endPlaceNode = placeNodeService.addPlaceNodeByName(endName);
+            endPlaceNode = placeNodeService.addPlaceNodeByName(endName,type);
         }
         BaseRelationship relationship = relationshipService
                 .addRelationship(RelationsType.DEEDS_REF_PLACE.getRelation(), startDeedsNode, endPlaceNode);
@@ -179,7 +179,7 @@ public class DeedsNodeServiceImpl implements IDeedsNodeService {
     }
 
 
-    private BaseRelationship addaddDeedsPersonRelationship(DeedsNode startDeedsNode, String endName) {
+    private BaseRelationship addaddDeedsPersonRelationship(DeedsNode startDeedsNode, String endName,String type) {
         PersonNode endPersonNode = personNodeService.getPersonNodeByName(endName);
         if (endPersonNode != null) { // 1.人物节点存在
             BaseRelationship relationship = relationshipService
@@ -188,7 +188,7 @@ public class DeedsNodeServiceImpl implements IDeedsNodeService {
                 return relationship;
             }
         } else {
-            endPersonNode = personNodeService.addPersonNodeByName(endName);
+            endPersonNode = personNodeService.addPersonNodeByName(endName, type);
         }
         BaseRelationship relationship = relationshipService
                 .addRelationship(RelationsType.DEEDS_REF_PERSON.getRelation(), startDeedsNode, endPersonNode);

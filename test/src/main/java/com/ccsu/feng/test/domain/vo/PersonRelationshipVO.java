@@ -15,7 +15,7 @@ public class PersonRelationshipVO {
 
     private String sufName;
 
-
-
     private String endName;
+
+    private String type;
 }

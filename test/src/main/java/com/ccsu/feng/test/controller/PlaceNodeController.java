@@ -67,7 +67,7 @@ public class PlaceNodeController {
     @PostMapping("/addPlaceNodeDeedsNodeRelationship")
     public Result<List<BaseRelationship>> addPlaceNodeDeedsNodeRelationship(@RequestBody DeedsRelationVO deedsRelationVO) {
         List<BaseRelationship> list = iPlaceNodeService
-                .addPlaceNodeDeedsNodeRelationship(deedsRelationVO.getStartName(), deedsRelationVO.getNames());
+                .addPlaceNodeDeedsNodeRelationship(deedsRelationVO.getStartName(), deedsRelationVO.getNames(),deedsRelationVO.getType());
         if (!list.isEmpty()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), list);
         } else {

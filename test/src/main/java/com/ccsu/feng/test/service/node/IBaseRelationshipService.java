@@ -82,5 +82,5 @@ public interface IBaseRelationshipService {
      * @param pageSize
      * @return
      */
-    PageResult<ListRelationVO> getListRelationByPage(int pageIndex, int pageSize);
+    PageResult<ListRelationVO> getListRelationByPage(int pageIndex, int pageSize,String type);
 }

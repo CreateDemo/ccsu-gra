@@ -44,14 +44,14 @@ function addIframe(cur){
 	if (h == "" || $.trim(h).length == 0) {
 		return false;
 	}
-	
+
 	var fullWidth = $(window).width();
 	if(fullWidth >= 750){
 		$(".layout-side").show();
 	}else{
 		$(".layout-side").hide();
 	}
-	
+
 	$(".content-tab").each(function() {
 		if ($(this).data("id") == h) {
 			if (!$(this).hasClass("active")) {
@@ -269,7 +269,7 @@ function closePage() {
 
 /*循环菜单*/
 function initMenu(menu,parent){
-	for(var i=0; i<menu.length; i++){   
+	for(var i=0; i<menu.length; i++){
 		var item = menu[i];
 		var str = "";
 		try{
@@ -330,13 +330,13 @@ $(".header-menu-btn").click(function(){
 	$(".layout-footer").removeClass("full-page");
 	$(".layout-side-arrow").removeClass("close");
 	$(".layout-side-arrow-icon").removeClass("close");
-	
+
 	$(".layout-side").slideToggle();
 });
 
 /*左侧菜单响应式*/
-$(window).resize(function() {  
-	var width = $(this).width();  
+$(window).resize(function() {
+	var width = $(this).width();
 	if(width >= 750){
 		$(".layout-side").show();
 	}else{
@@ -350,7 +350,7 @@ $(".dropdown-skin li a").click(function(){
 	var hrefStr=$("#layout-skin").attr("href");
 	var hrefRes=hrefStr.substring(0,hrefStr.lastIndexOf('skin/'))+'skin/'+v+'/skin.css';
 	$(window.frames.document).contents().find("#layout-skin").attr("href",hrefRes);
-	
+
 	setCookie("scclui-skin", v);
 });
 
@@ -403,10 +403,31 @@ $(function(){
                             {"id":"8","name":"关系管理(西)","parentId":"3","url":"/admin/xi/relation","icon":"","order":"1","isHeader":"0","childMenus":""}
 					]},
 
-					{"id":"6","name":"订单管理","parentId":"1","url":"","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":[
-						{"id":"7","name":"已付款","parentId":"6","url":"home3.html","icon":"","order":"1","isHeader":"0","childMenus":""},
-						{"id":"8","name":"未付款","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""}
-					]}
+					{"id":"9","name":"三国演义","parentId":"1","url":"","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":[
+						{"id":"10","name":"人物管理(三)","parentId":"9","url":"/admin/san/person","icon":"","order":"1","isHeader":"0","childMenus":""},
+						{"id":"11","name":"武器管理(三)","parentId":"9","url":"/admin/san/weapon","icon":"","order":"1","isHeader":"0","childMenus":""},
+                            {"id":"12","name":"地点管理(三)","parentId":"9","url":"/admin/san/place","icon":"","order":"1","isHeader":"0","childMenus":""},
+                            {"id":"13","name":"事件管理(三)","parentId":"9","url":"/admin/san/deeds","icon":"","order":"1","isHeader":"0","childMenus":""},
+                            {"id":"14","name":"关系管理(三)","parentId":"9","url":"/admin/san/relation","icon":"","order":"1","isHeader":"0","childMenus":""}
+					]},
+
+
+            {"id":"15","name":"水浒传","parentId":"1","url":"","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":[
+                    {"id":"16","name":"人物管理(水)","parentId":"6","url":"home3.html","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"17","name":"武器管理(水)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"18","name":"地点管理(水)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"19","name":"事件管理(水)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"20","name":"关系管理(水)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""}
+                ]},
+
+            {"id":"21","name":"红楼们","parentId":"1","url":"","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":[
+                    {"id":"22","name":"人物管理(红)","parentId":"6","url":"home3.html","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"18","name":"地点管理(红)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"19","name":"事件管理(红)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"20","name":"关系管理(红)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""}
+                ]},
+
+
 				]},
 				{"id":"2","name":"框架案例","parentId":"0","url":"","icon":"","order":"2","isHeader":"1","childMenus":[
 					{"id":"9","name":"新功能","parentId":"2","url":"","icon":"","order":"1","isHeader":"0","childMenus":""},
@@ -427,7 +448,7 @@ $(function(){
 				];
 	initMenu(menu,$(".side-menu"));
 	$(".side-menu > li").addClass("menu-item");
-	
+
 	/*获取菜单icon随机色*/
 	//getMathColor();
 }); 

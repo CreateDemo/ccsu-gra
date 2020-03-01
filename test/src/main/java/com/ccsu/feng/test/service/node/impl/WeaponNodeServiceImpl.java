@@ -41,14 +41,14 @@ public class WeaponNodeServiceImpl implements IWeaponNodeService {
     }
 
     @Override
-    public WeaponVO addWeaponByName(String name) {
+    public WeaponNode addWeaponByName(String name,String type) {
         log.info("需要添加的武器名称为 ->{}", name);
         WeaponNode weaponNode = new WeaponNode();
         weaponNode.setName(name);
+        weaponNode.setType(type);
         weaponRepository.save(weaponNode);
         log.info("保存成功 -{}", weaponNode);
-        WeaponVO weaponVO = new WeaponVO(weaponNode);
-        return weaponVO;
+        return weaponNode;
     }
 
     @Override

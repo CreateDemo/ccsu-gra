@@ -28,7 +28,7 @@ public interface IPlaceNodeService {
      * @return
      * @description 根据名称添加地点节点
      */
-    PlaceNode addPlaceNodeByName(String name);
+    PlaceNode addPlaceNodeByName(String name,String type);
 
 
     /**
@@ -60,7 +60,7 @@ public interface IPlaceNodeService {
      * @param startName 地点名称
      * @param names     事迹名称
      */
-    List<BaseRelationship> addPlaceNodeDeedsNodeRelationship(String startName, Set<String> names);
+    List<BaseRelationship> addPlaceNodeDeedsNodeRelationship(String startName, Set<String> names,String type);
 
 
     /**

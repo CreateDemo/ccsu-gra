@@ -68,7 +68,7 @@ public class DeedsNodeController {
     @PostMapping("/addDeedsPersonRelationship")
     public Result<List<BaseRelationship>> addDeedsPersonRelationship(@RequestBody DeedsRelationVO deedsRelationVO) {
         List<BaseRelationship> list = iDeedsNodeService
-                .addDeedsPersonRelationship(deedsRelationVO.getStartName(), deedsRelationVO.getNames());
+                .addDeedsPersonRelationship(deedsRelationVO.getStartName(), deedsRelationVO.getNames(),deedsRelationVO.getType());
         if (!list.isEmpty()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), list);
         } else {
@@ -80,7 +80,7 @@ public class DeedsNodeController {
     @PostMapping("/addDeedsPlaceRelationship")
     public Result<List<BaseRelationship>> addDeedsPlaceRelationship(@RequestBody DeedsRelationVO deedsRelationVO) {
         List<BaseRelationship> list = iDeedsNodeService
-                .addDeedsPlaceRelationship(deedsRelationVO.getStartName(), deedsRelationVO.getNames());
+                .addDeedsPlaceRelationship(deedsRelationVO.getStartName(), deedsRelationVO.getNames(),deedsRelationVO.getType());
         if (!list.isEmpty()) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), list);
         } else {

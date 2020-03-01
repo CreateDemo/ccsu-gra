@@ -44,7 +44,8 @@
         </el-select>
         <el-button
                 type="success"
-                @click="refresh()">刷新</el-button>
+                @click="refresh()">刷新
+        </el-button>
     </div>
     <template>
         <el-table
@@ -130,7 +131,7 @@
         </el-table>
     </template>
 
-   <!--修改-->
+    <!--修改-->
     <el-dialog title="关系名修改" :visible.sync="dialogFormVisible">
         <el-form :model="editDetail">
 
@@ -148,7 +149,7 @@
                 <el-input v-model="editDetail.endName" :disabled="true" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="类型" :label-width="formLabelWidth">
-                <el-input  :disabled="true" v-model="type"  autocomplete="off"></el-input>
+                <el-input :disabled="true" v-model="type" autocomplete="off"></el-input>
             </el-form-item>
 
         </el-form>
@@ -412,7 +413,7 @@
                 label: '双向关系'
             }],
             formLabelWidth: '120px',
-            type:'西游记',
+            type: '西游记',
             myResult: true,
             sufResult: true,
             value: '',
@@ -422,15 +423,13 @@
             addDetailDeedsToPerson: {},
             addDetailDeedsToPlace: {},
             addDetailPlaceToDeeds: {},
-
             adddialogFormVisiblePersonToPerson: false,
             adddialogFormVisiblePersonToWeapon: false,
             adddialogFormVisibleDeedsToPerson: false,
             adddialogFormVisibleDeedsToPlace: false,
             adddialogFormVisiblePlaceToDeeds: false,
-
-            dialogFormVisible:false,
-            editDetail:{},
+            dialogFormVisible: false,
+            editDetail: {},
 
             newsList: [],
             pageParams: {
@@ -447,7 +446,7 @@
             this.getListRelationByPage();
         },
         methods: {
-            refresh(){
+            refresh() {
                 this.getListRelationByPage();
                 this.$message({
                     type: 'success',
@@ -456,11 +455,12 @@
 
             }
             ,
-            getListRelationByPage(){
-                let _this =this;
+            getListRelationByPage() {
+                let _this = this;
                 let postData = {
-                    pageIndex:this.pageParams.pageIndex,
-                    pageSize:this.pageParams.pageSize
+                    pageIndex: this.pageParams.pageIndex,
+                    pageSize: this.pageParams.pageSize,
+                    type: this.type,
                 };
                 var url = "/admin/relation/getBaseRelationshipByPage";
                 $.ajax({
@@ -468,13 +468,13 @@
                     url: url,
                     data: postData,
                     async: false,
-                    success: function(res){
+                    success: function (res) {
                         _this.newsList = res.data.nodeList;
                         console.log(res.data);
                         console.log(_this.newsList);
-                        _this.pageParams.totalCount =res.data.totalCount;
-                        for(var i =0;i<_this.newsList.length;i++){
-                            _this.newsList[i].type=_this.type;
+                        _this.pageParams.totalCount = res.data.totalCount;
+                        for (var i = 0; i < _this.newsList.length; i++) {
+                            _this.newsList[i].type = _this.type;
                         }
                     },
                     error: function () {
@@ -488,26 +488,26 @@
             edit(index, row) {
                 console.log(row);
                 this.editDetail = {
-                    startName:row.startName,
-                    id:row.id,
-                    relationName:row.relationName ,
+                    startName: row.startName,
+                    id: row.id,
+                    relationName: row.relationName,
                     type: row.type,
                     endName: row.endName,
                 }
-                this.dialogFormVisible=true;
+                this.dialogFormVisible = true;
             },
-            update(){
-                if (this.editDetail.relationName==null ||this.editDetail.relationName==='') {
+            update() {
+                if (this.editDetail.relationName == null || this.editDetail.relationName === '') {
                     this.$message({
                         message: '关系名称不能为空',
                         type: 'warning'
                     });
                     return;
                 }
-                let _this= this
-                let postData={
-                    id:_this.editDetail.id,
-                    name:_this.editDetail.relationName
+                let _this = this
+                let postData = {
+                    id: _this.editDetail.id,
+                    name: _this.editDetail.relationName
                 }
                 console.log("111")
                 console.log(postData)
@@ -515,21 +515,21 @@
                 $.ajax({
                     type: "post",
                     url: url,
-                    data:postData,
-                    success: function(res){
+                    data: postData,
+                    success: function (res) {
                         console.log("1111")
                         console.log(res)
-                        if(res.code!=="200"){
+                        if (res.code !== "200") {
                             _this.$message.error('修改失败');
                             return;
                         }
-                        _this .dialogFormVisible = false;
+                        _this.dialogFormVisible = false;
                         _this.getListRelationByPage();
                         _this.$message({
                             type: 'success',
                             message: '修改成功!'
                         });
-                        _this.editDetail={};
+                        _this.editDetail = {};
                     },
                     error: function () {
                         alert("失败..");
@@ -538,30 +538,29 @@
             },
 
 
-
             //删除
             deletelist(index, row) {
                 let postData = {
-                    id:row.id,
+                    id: row.id,
                 };
                 this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    let _this =this;
+                    let _this = this;
                     var url = "/admin/relation/deleteRelationshipById";
                     $.ajax({
                         type: "delete",
                         url: url,
                         data: postData,
-                        success: function(res){
+                        success: function (res) {
                             _this.$message({
                                 type: 'success',
                                 message: '删除成功!'
                             });
-                            if (_this.pageParams.totalCount% _this.pageParams.pageSize===1 && _this.pageParams.pageIndex>1){
-                                _this.pageParams.pageIndex=_this.pageParams.pageIndex-1;
+                            if (_this.pageParams.totalCount % _this.pageParams.pageSize === 1 && _this.pageParams.pageIndex > 1) {
+                                _this.pageParams.pageIndex = _this.pageParams.pageIndex - 1;
                             }
                             _this.getListRelationByPage();
                         },
@@ -582,7 +581,7 @@
             loadAll() {
                 let _this = this;
                 let postData = {
-                    type: "西游记"
+                    type: this.type,
                 };
                 var url = "/admin/baseNode/findBaseNodeName";
                 $.ajax({
@@ -657,8 +656,8 @@
                 let _this = this;
                 let postData = {
                     name: item.value,
-                    pageIndex:1,
-                    pageSize:10
+                    pageIndex: 1,
+                    pageSize: 10
                 };
                 var url = "/admin/baseNode/findBaseRelationshipByNameByPage";
                 $.ajax({
@@ -672,9 +671,9 @@
                             return;
                         }
                         _this.newsList = res.data.nodeList;
-                        _this.pageParams.totalCount =res.data.totalCount;
-                        for(var i =0;i<_this.newsList.length;i++){
-                            _this.newsList[i].type=_this.type;
+                        _this.pageParams.totalCount = res.data.totalCount;
+                        for (var i = 0; i < _this.newsList.length; i++) {
+                            _this.newsList[i].type = _this.type;
                         }
                     },
                     error: function () {
@@ -731,7 +730,7 @@
                 let _this = this;
                 let postData = {
                     nodeType: "personNode",
-                    type: "西游记"
+                    type: this.type
                 };
                 var url = "/admin/relation/findNodeName";
                 $.ajax({
@@ -755,7 +754,7 @@
                 let _this = this;
                 let postData = {
                     nodeType: "weaponNode",
-                    type: "西游记"
+                    type: this.type
                 };
                 var url = "/admin/relation/findNodeName";
                 $.ajax({
@@ -778,7 +777,7 @@
                 let _this = this;
                 let postData = {
                     nodeType: "deedsNode",
-                    type: "西游记"
+                    type: this.type
                 };
                 var url = "/admin/relation/findNodeName";
                 $.ajax({
@@ -802,7 +801,7 @@
                 let _this = this;
                 let postData = {
                     nodeType: "placeNode",
-                    type: "西游记"
+                    type: this.type
                 };
                 var url = "/admin/relation/findNodeName";
                 $.ajax({
@@ -860,6 +859,7 @@
                     preName: _this.addDetailPersonToPerson.preRelation,
                     sufName: _this.addDetailPersonToPerson.sufRelation,
                     endName: _this.addDetailPersonToPerson.endName,
+                    type:_this.type,
                 };
                 // 单向关系
                 if (_this.addDetailPersonToPerson.sufRelation === '' || _this.addDetailPersonToPerson.sufRelation == null) {
@@ -951,6 +951,7 @@
                 let postData = {
                     startName: _this.addDetailPersonToWeapon.startName,
                     endName: _this.addDetailPersonToWeapon.endName,
+                    type:_this.type,
                 };
 
                 var url = "/admin/personNode/addPersonNodeWeaponNode";
@@ -1001,6 +1002,7 @@
                 let postData = {
                     startName: _this.addDetailDeedsToPerson.startName,
                     names: [_this.addDetailDeedsToPerson.endName],
+                    type:_this.type,
                 };
                 var url = "/admin/deedsNode/addDeedsPersonRelationship";
                 $.ajax({
@@ -1050,6 +1052,7 @@
                 let postData = {
                     startName: _this.addDetailDeedsToPlace.startName,
                     names: [_this.addDetailDeedsToPlace.endName],
+                    type:_this.type,
                 };
                 var url = "/admin/deedsNode/addDeedsPlaceRelationship";
                 $.ajax({
@@ -1098,6 +1101,7 @@
                 let postData = {
                     startName: _this.addDetailPlaceToDeeds.startName,
                     names: [_this.addDetailPlaceToDeeds.endName],
+                    type:_this.type,
                 };
                 var url = "/admin/place/addPlaceNodeDeedsNodeRelationship";
                 $.ajax({
@@ -1131,7 +1135,7 @@
             },
             handleCurrentChange(val) {
                 this.pageParams.pageIndex = val;
-               this.getListRelationByPage();
+                this.getListRelationByPage();
             },
 
 

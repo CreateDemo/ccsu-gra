@@ -24,7 +24,7 @@ public interface IWeaponNodeService {
      * @return
      * @description 根据名称添加武器节点
      */
-    WeaponVO addWeaponByName(String name);
+    WeaponNode addWeaponByName(String name,String type);
 
     /**
      * @param name

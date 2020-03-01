@@ -14,7 +14,7 @@ public enum RelationsType {
     /**
      * 武器属于
      */
-    WEAPON_REF("()属于"),
+    WEAPON_REF("属于"),
 
     /**
      * 地点 含有些事迹  一对多

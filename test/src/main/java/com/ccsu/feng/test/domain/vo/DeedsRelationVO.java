@@ -21,4 +21,6 @@ public class DeedsRelationVO {
      *
      */
     private Set<String>  names;
+
+    private String type;
 }

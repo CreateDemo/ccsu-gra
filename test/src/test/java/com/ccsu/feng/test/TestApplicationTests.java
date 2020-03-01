@@ -1,5 +1,7 @@
 package com.ccsu.feng.test;
 
+import com.ccsu.feng.test.dao.UserBasesMapper;
+import com.ccsu.feng.test.entity.UserBases;
 import com.ccsu.feng.test.service.node.IPersonNodeService;
 import com.ccsu.feng.test.utils.RedisUtil;
 import org.junit.Assert;
@@ -19,10 +21,12 @@ public class TestApplicationTests {
     @Autowired
     RedisUtil redisUtil;
 
+    @Autowired
+    UserBasesMapper userBasesMapper;
+
     @Test
     public void contextLoads() {
-        boolean flag = redisUtil.set("廖云锋", "你好！");
-        Assert.assertEquals(flag,true);
+
 
     }
 

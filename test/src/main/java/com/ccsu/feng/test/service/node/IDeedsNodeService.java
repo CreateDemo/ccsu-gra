@@ -46,7 +46,7 @@ public interface IDeedsNodeService {
      * @return
      * @description 根据名称添加事迹节点
      */
-    DeedsNode addDeedsNodeByName(String name);
+    DeedsNode addDeedsNodeByName(String name,String type);
 
     /**
      * @param id
@@ -62,7 +62,7 @@ public interface IDeedsNodeService {
      * @param startName 事迹名称
      * @param names     人物名称
      */
-    List<BaseRelationship> addDeedsPersonRelationship(String startName, Set<String> names);
+    List<BaseRelationship> addDeedsPersonRelationship(String startName, Set<String> names,String type);
 
 
 
@@ -72,7 +72,7 @@ public interface IDeedsNodeService {
      * @param startName 事件名称
      * @param names     地点名称
      */
-    List<BaseRelationship> addDeedsPlaceRelationship(String startName, Set<String> names);
+    List<BaseRelationship> addDeedsPlaceRelationship(String startName, Set<String> names,String type);
 
 
     /**

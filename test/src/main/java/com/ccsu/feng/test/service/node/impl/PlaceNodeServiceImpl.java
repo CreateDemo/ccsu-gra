@@ -50,13 +50,14 @@ public class PlaceNodeServiceImpl implements IPlaceNodeService {
     }
 
     @Override
-    public PlaceNode addPlaceNodeByName(String name) {
+    public PlaceNode addPlaceNodeByName(String name,String type) {
         log.info("需要添加的地点名称为 ->{}", name);
         if (StringUtils.isEmpty(name)) {
             return null;
         }
         PlaceNode placeNode = new PlaceNode();
         placeNode.setName(name);
+        placeNode.setType(type);
         PlaceNode node = placeNodeRepository.save(placeNode);
         log.info("保存成功 -{}", node);
         return node;
@@ -103,17 +104,17 @@ public class PlaceNodeServiceImpl implements IPlaceNodeService {
 
 
     @Override
-    public List<BaseRelationship> addPlaceNodeDeedsNodeRelationship(String startName, Set<String> names) {
+    public List<BaseRelationship> addPlaceNodeDeedsNodeRelationship(String startName, Set<String> names,String type) {
         List<BaseRelationship> list = new ArrayList<>();
         log.info("地点名称 ->startName为->{}", startName);
         PlaceNode startPlaceNode = getPlaceNodeByName(startName);
         log.info("地点查找结果为->{}", startPlaceNode);
         if (startPlaceNode == null) {
-            startPlaceNode = addPlaceNodeByName(startName);
+            startPlaceNode = addPlaceNodeByName(startName,type);
         }
 
         for (String name : names) {
-            list.add(addPlaceNodeDeedsNodeRelationship(startPlaceNode, name));
+            list.add(addPlaceNodeDeedsNodeRelationship(startPlaceNode, name,type));
         }
         return list;
     }
@@ -155,7 +156,7 @@ public class PlaceNodeServiceImpl implements IPlaceNodeService {
         return new PageResult<>(pageIndex, pageSize, (long) page.size(), list);
     }
 
-    private BaseRelationship addPlaceNodeDeedsNodeRelationship(PlaceNode startPlaceNode, String endName) {
+    private BaseRelationship addPlaceNodeDeedsNodeRelationship(PlaceNode startPlaceNode, String endName,String type) {
         DeedsNode endDeedsNode = iDeedsNodeService.getDeedsNodeByName(endName);
         log.info("事迹名称->{}", endName);
         if (endDeedsNode != null) { // 1.人物节点存在
@@ -165,7 +166,7 @@ public class PlaceNodeServiceImpl implements IPlaceNodeService {
                 return relationship;
             }
         } else {
-            endDeedsNode = iDeedsNodeService.addDeedsNodeByName(endName);
+            endDeedsNode = iDeedsNodeService.addDeedsNodeByName(endName,type);
         }
         BaseRelationship relationship = relationshipService
                 .addRelationship(RelationsType.DEEDS_REF_PERSON.getRelation(), startPlaceNode, endDeedsNode);

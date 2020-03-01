@@ -62,14 +62,14 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
 
 
     @Override
-    public PersonNode addPersonNodeByName(String name) {
+    public PersonNode addPersonNodeByName(String name,String type) {
         log.info("需要添加的人物名称为 ->{}", name);
         if (StringUtils.isEmpty(name)) {
             return null;
         }
         PersonNode person = new PersonNode();
         person.setName(name);
-
+        person.setType(type);
         PersonNode personNode = personNodeRepository.save(person);
 
         return personNode;
@@ -100,7 +100,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
 
 
     @Override
-    public BaseRelationship addPersonNodeRelationship(String name, String startName, String endName) {
+    public BaseRelationship addPersonNodeRelationship(String name, String startName, String endName,String type) {
         //获取人物节点
         PersonNode startPerson = getPersonNodeByName(startName);
         PersonNode endPerson = getPersonNodeByName(endName);
@@ -120,12 +120,12 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
                 return relationship;
             }
         } else if (startPerson != null && endPerson == null) { //2.开始人物节点存在，结束人物节点不存在
-            endPerson = addPersonNodeByName(endName);
+            endPerson = addPersonNodeByName(endName,type);
         } else if (startPerson == null && endPerson != null) { //3.开始人物节点不存在，结束人物节点存在
-            startPerson = addPersonNodeByName(startName);
+            startPerson = addPersonNodeByName(startName,type);
         } else if (startPerson == null && endPerson == null) { //4.人物节点均不存在
-            startPerson = addPersonNodeByName(startName);
-            endPerson = addPersonNodeByName(endName);
+            startPerson = addPersonNodeByName(startName,type);
+            endPerson = addPersonNodeByName(endName,type);
         }
         BaseRelationship relationship = relationshipService.addRelationship(name, startPerson, endPerson);
         //更新开始节点关系
@@ -141,12 +141,12 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
 
 
     @Override
-    public List<BaseRelationship> addTwoPersonNodeRelationship(String preName, String sufName, String startName, String endName) {
+    public List<BaseRelationship> addTwoPersonNodeRelationship(String preName, String sufName, String startName, String endName,String type) {
         List<BaseRelationship> list = new ArrayList<>();
         //顺向关系
-        BaseRelationship baseRelationship = addPersonNodeRelationship(preName, startName, endName);
+        BaseRelationship baseRelationship = addPersonNodeRelationship(preName, startName, endName,type);
         //逆向关系
-        BaseRelationship baseRelationship1 = addPersonNodeRelationship(sufName, endName, startName);
+        BaseRelationship baseRelationship1 = addPersonNodeRelationship(sufName, endName, startName,type);
         list.add(baseRelationship);
         list.add(baseRelationship1);
         return list;
@@ -160,7 +160,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
 
 
     @Override
-    public List<BaseRelationship> addPersonNodeWeapon(String startName, String endName) {
+    public List<BaseRelationship> addPersonNodeWeapon(String startName, String endName,String type) {
         List<BaseRelationship> list = new ArrayList<>();
         PersonNode startNode = getPersonNodeByName(startName);
         WeaponNode endNode = weaponNodeRepository.getWeaponByName(endName);
@@ -178,7 +178,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
             BaseRelationship relationship = relationshipService.findRelationshipByStarNameAndEndName(RelationsType.PERSON_TO_WEAPON.getRelation(), startName, endName);
             if (relationship != null) {
                 list.add(relationship);
-                list.add(addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName));
+                list.add(addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName,type));
                 return list;
             }
         } else if (startNode != null && endNode == null) { //2.开始节点存在，结束人物节点不存在
@@ -186,9 +186,9 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
             weapon.setName(endName);
             endNode = weaponNodeRepository.save(weapon);
         } else if (startNode == null && endNode != null) { //3.开始人物节点不存在，结束人物节点存在
-            startNode = addPersonNodeByName(startName);
+            startNode = addPersonNodeByName(startName,type);
         } else if (startNode == null && endNode == null) { //4.人物节点均不存在
-            startNode = addPersonNodeByName(startName);
+            startNode = addPersonNodeByName(startName,type);
             WeaponNode weapon = new WeaponNode();
             weapon.setName(endName);
             endNode = weaponNodeRepository.save(weapon);
@@ -204,7 +204,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
         startNode.setRelationships(relationships);
         personNodeRepository.save(startNode);
         list.add(relationship);
-        list.add(addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName));
+        list.add(addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName,type));
         return list;
     }
 
@@ -245,18 +245,18 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
     }
 
 
-    private BaseRelationship addWeaponPerson(String name, String startName, String endName) {
+    private BaseRelationship addWeaponPerson(String name, String startName, String endName,String type) {
         WeaponNode startNode = weaponNodeRepository.getWeaponByName(startName);
         PersonNode endNode = getPersonNodeByName(endName);
 
         if (startNode != null && endNode != null) { // 1.节点全部存在
             BaseRelationship relationship = relationshipService.findRelationshipByStarNameAndEndName(name, startName, endName);
             if (relationship != null) {
-                addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName);
+                addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName,type);
                 return relationship;
             }
         } else if (startNode != null && endNode == null) { //2.开始节点存在，结束人物节点不存在
-            endNode = addPersonNodeByName(endName);
+            endNode = addPersonNodeByName(endName,type);
         } else if (startNode == null && endNode != null) { //3.开始人物节点不存在，结束人物节点存在
             WeaponNode weapon = new WeaponNode();
             weapon.setName(endName);
@@ -265,7 +265,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
             WeaponNode weapon = new WeaponNode();
             weapon.setName(endName);
             startNode = weaponNodeRepository.save(weapon);
-            endNode = addPersonNodeByName(startName);
+            endNode = addPersonNodeByName(startName,type);
         }
 
         BaseRelationship relationship = relationshipService.addRelationship(name, startNode, endNode);

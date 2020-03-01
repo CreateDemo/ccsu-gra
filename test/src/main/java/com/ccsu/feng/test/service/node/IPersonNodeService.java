@@ -35,7 +35,7 @@ public interface IPersonNodeService {
      * @return
      * @description 根据名称添加人物
      */
-    PersonNode addPersonNodeByName(String name);
+    PersonNode addPersonNodeByName(String name,String type);
 
 
     /**
@@ -59,7 +59,7 @@ public interface IPersonNodeService {
      * @return
      * @description 添加人物关系  单向关系
      */
-    BaseRelationship addPersonNodeRelationship(String name, String startName, String endName);
+    BaseRelationship addPersonNodeRelationship(String name, String startName, String endName,String type);
 
 
     /**
@@ -71,7 +71,7 @@ public interface IPersonNodeService {
      * @param endName
      * @return
      */
-    List<BaseRelationship> addTwoPersonNodeRelationship(String preName, String sufName, String startName, String endName);
+    List<BaseRelationship> addTwoPersonNodeRelationship(String preName, String sufName, String startName, String endName,String type);
 
 
     /**
@@ -91,7 +91,7 @@ public interface IPersonNodeService {
      * @return
      * @description 添加武器
      */
-    List<BaseRelationship> addPersonNodeWeapon(String startName, String endName);
+    List<BaseRelationship> addPersonNodeWeapon(String startName, String endName,String type);
 
 
     /**
