@@ -36,7 +36,6 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/admin/login",method = RequestMethod.POST)
     public Result<Boolean> adminLogin(@Valid @RequestBody AdminUser adminUser, BindingResult bindingResult) throws Exception {
-        int a=3/0;
         if (bindingResult.hasErrors()){
              throw  new BaseException("传入参数有误！");
         }

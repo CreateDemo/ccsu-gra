@@ -32,8 +32,10 @@ public class WebAppConfig  implements WebMvcConfigurer {
         registry.addViewController("/admin/login").setViewName("/admin/login");
         registry.addViewController("/admin/home").setViewName("/admin/home");
         registry.addViewController("/login").setViewName("/page/login");
-        registry.addViewController("/").setViewName("/page/login");
+        registry.addViewController("/page/login").setViewName("/page/login");
+        registry.addViewController("/").setViewName("/page/index");
         registry.addViewController("/register").setViewName("/page/register");
+        registry.addViewController("/page/register").setViewName("/page/register");
 
         registry.addViewController("/admin/xi/person").setViewName("/admin/xi/person");
         registry.addViewController("/admin/xi/weapon").setViewName("/admin/xi/weapon");
@@ -46,6 +48,18 @@ public class WebAppConfig  implements WebMvcConfigurer {
         registry.addViewController("/admin/sam/place").setViewName("/admin/san/place");
         registry.addViewController("/admin/san/deeds").setViewName("/admin/san/deeds");
         registry.addViewController("/admin/san/relation").setViewName("/admin/san/relation");
+
+        registry.addViewController("/admin/shui/person").setViewName("/admin/shui/person");
+        registry.addViewController("/admin/shui/weapon").setViewName("/admin/shui/weapon");
+        registry.addViewController("/admin/shui/place").setViewName("/admin/shui/place");
+        registry.addViewController("/admin/shui/deeds").setViewName("/admin/shui/deeds");
+        registry.addViewController("/admin/shui/relation").setViewName("/admin/shui/relation");
+
+        registry.addViewController("/admin/hong/person").setViewName("/admin/hong/person");
+        registry.addViewController("/admin/hong/weapon").setViewName("/admin/hong/weapon");
+        registry.addViewController("/admin/hong/place").setViewName("/admin/hong/place");
+        registry.addViewController("/admin/hong/deeds").setViewName("/admin/hong/deeds");
+        registry.addViewController("/admin/hong/relation").setViewName("/admin/hong/relation");
 
 
     }

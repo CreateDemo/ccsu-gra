@@ -394,8 +394,8 @@ $(function(){
 	//getSkinByCookie();
 
 	/*菜单json*/
-	var menu = [{"id":"1","name":"主菜单","parentId":"0","url":"","icon":"","order":"1","isHeader":"1","childMenus":[
-					{"id":"3","name":"西游记","parentId":"1","url":"","icon":"&#xe620;","order":"1","isHeader":"0","childMenus":[
+	var menu = [{"id":"1","name":"主菜单","parentId":"0","url":"","icon":"&#xe602","order":"1","isHeader":"1","childMenus":[
+					{"id":"3","name":"西游记","parentId":"1","url":"","icon":"&#xe602","order":"1","isHeader":"0","childMenus":[
 						{"id":"4","name":"人物管理(西)","parentId":"3","url":"/admin/xi/person","icon":"","order":"1","isHeader":"0","childMenus":""},
 							{"id":"5","name":"武器管理(西)","parentId":"3","url":"/admin/xi/weapon","icon":"","order":"1","isHeader":"0","childMenus":""},
 						{"id":"6","name":"地点管理(西)","parentId":"3","url":"/admin/xi/place","icon":"","order":"1","isHeader":"0","childMenus":""},
@@ -413,18 +413,18 @@ $(function(){
 
 
             {"id":"15","name":"水浒传","parentId":"1","url":"","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":[
-                    {"id":"16","name":"人物管理(水)","parentId":"6","url":"home3.html","icon":"","order":"1","isHeader":"0","childMenus":""},
-                    {"id":"17","name":"武器管理(水)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""},
-                    {"id":"18","name":"地点管理(水)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""},
-                    {"id":"19","name":"事件管理(水)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""},
-                    {"id":"20","name":"关系管理(水)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""}
+                    {"id":"16","name":"人物管理(水)","parentId":"15","url":"/admin/shui/person","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"17","name":"武器管理(水)","parentId":"15","url":"/admin/shui/weapon","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"18","name":"地点管理(水)","parentId":"15","url":"/admin/shui/place","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"19","name":"事件管理(水)","parentId":"15","url":"/admin/shui/deeds","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"20","name":"关系管理(水)","parentId":"15","url":"/admin/shui/relation","icon":"","order":"1","isHeader":"0","childMenus":""}
                 ]},
 
-            {"id":"21","name":"红楼们","parentId":"1","url":"","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":[
-                    {"id":"22","name":"人物管理(红)","parentId":"6","url":"home3.html","icon":"","order":"1","isHeader":"0","childMenus":""},
-                    {"id":"18","name":"地点管理(红)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""},
-                    {"id":"19","name":"事件管理(红)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""},
-                    {"id":"20","name":"关系管理(红)","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""}
+            {"id":"21","name":"红楼梦","parentId":"1","url":"","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":[
+                    {"id":"22","name":"人物管理(红)","parentId":"6","url":"/admin/hong/person","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"18","name":"地点管理(红)","parentId":"6","url":"/admin/hong/place","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"19","name":"事件管理(红)","parentId":"6","url":"/admin/hong/deeds","icon":"","order":"1","isHeader":"0","childMenus":""},
+                    {"id":"20","name":"关系管理(红)","parentId":"6","url":"/admin/hong/relation","icon":"","order":"1","isHeader":"0","childMenus":""}
                 ]},
 
 

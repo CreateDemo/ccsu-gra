@@ -38,7 +38,6 @@ public class AdminUserLoginInterceptor implements HandlerInterceptor {
         }
         return true;
     }
-
     /**
      * 在请求被处理后，视图渲染之前调用
      * @param request

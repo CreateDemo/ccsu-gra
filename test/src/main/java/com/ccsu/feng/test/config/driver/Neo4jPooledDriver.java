@@ -43,7 +43,6 @@ public class Neo4jPooledDriver {
         return driver.session();
     }
 
-
     /**
      * Session just for Query
      * @return Session
