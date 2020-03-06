@@ -1,15 +1,19 @@
 package com.ccsu.feng.test.controller;
 
+import com.ccsu.feng.test.annotation.AccessLimit;
 import com.ccsu.feng.test.entity.AdminUser;
 import com.ccsu.feng.test.entity.UserBases;
+import com.ccsu.feng.test.entity.vo.LoginVO;
 import com.ccsu.feng.test.entity.vo.UserVO;
 import com.ccsu.feng.test.enums.ResultEnum;
 import com.ccsu.feng.test.exception.BaseException;
 import com.ccsu.feng.test.service.user.UserService;
+import com.ccsu.feng.test.utils.CookieUtil;
+import com.ccsu.feng.test.utils.EncryptUtil;
 import com.ccsu.feng.test.utils.RedisUtil;
 import com.ccsu.feng.test.utils.Result;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
@@ -43,7 +49,7 @@ public class UserController {
         if (userLogin) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), userLogin);
         } else {
-            return Result.error(ResultEnum.ADMIN_NOT_USER.getCode(),ResultEnum.ADMIN_NOT_USER.getMsg());
+            return Result.error(ResultEnum.USER_AND_PASSWORD_FAIL.getCode(),ResultEnum.USER_AND_PASSWORD_FAIL.getMsg());
         }
     }
 
@@ -69,23 +75,39 @@ public class UserController {
 
     }
 
+    @AccessLimit(seconds = 60*30,maxCount = 5)
     @ResponseBody
     @RequestMapping(value = "/page/login",method = RequestMethod.POST)
-    public  Result<UserBases> pageLogin(String username,String password)  {
-        UserBases userBases = userService.pageLogin(username, password);
+    public  Result<String> pageLogin(@RequestBody LoginVO loginVO, HttpServletResponse response)  {
+        String userId = userService.pageLogin(loginVO.getUsername(), loginVO.getPassword());
+        if (!StringUtils.isEmpty(userId)) {
+            String cookie = EncryptUtil.getInstance().AESencode(userId, "feng");
+            CookieUtil.set(response,"ticket",cookie,true);
+            return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), cookie);
+        } else {
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/page/getPageUser",method = RequestMethod.GET)
+    public  Result<UserBases> getPageUser()  {
+        UserBases userBases = userService.getPageUser();
         if (userBases!=null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), userBases);
         } else {
-            return Result.error(ResultEnum.REGISTER_FAIL.getCode(),ResultEnum.REGISTER_FAIL.getMsg());
+            return Result.error(ResultEnum.USER_NOT_LOGIN.getCode(),ResultEnum.USER_NOT_LOGIN.getMsg());
         }
     }
 
     @ResponseBody
     @RequestMapping(value = "/page/smsLogin", method = RequestMethod.POST)
-    public  Result<UserBases> smsLogin(String phone,String smsCode)  {
-        UserBases userBases = userService.smsLogin(phone, smsCode);
-        if (userBases!=null) {
-            return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), userBases);
+    public  Result<String> smsLogin(String phone,String smsCode, HttpServletResponse response)  {
+        String userBasesId = userService.smsLogin(phone, smsCode);
+        if (!StringUtils.isEmpty(userBasesId)) {
+            String cookie = EncryptUtil.getInstance().AESencode(userBasesId, "feng");
+            CookieUtil.set(response,"ticket",cookie,true);
+            return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), userBasesId);
         } else {
             return Result.error(ResultEnum.REGISTER_FAIL.getCode(),ResultEnum.REGISTER_FAIL.getMsg());
         }
@@ -99,7 +121,7 @@ public class UserController {
         if (aBoolean!=null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), aBoolean);
         } else {
-            return Result.error(ResultEnum.REGISTER_FAIL.getCode(),ResultEnum.REGISTER_FAIL.getMsg());
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
         }
 
     }
@@ -127,6 +149,33 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/page/loginOut", method = RequestMethod.GET)
+    @ResponseBody
+    public  Result<Boolean> pageLoginOut( String id,HttpServletRequest request,HttpServletResponse response)  {
+        if (StringUtils.isEmpty(id)){
+            throw new BaseException("id为空");
+        }
+        redisUtil.hdel("page_user_key",id);
+        CookieUtil.remove(request,response,"ticket");
+        return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), true);
+    }
 
+
+    @RequestMapping(value = "/page/updatePicture", method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Boolean> updatePicture(String id, String imgUrl)  {
+        if (StringUtils.isEmpty(imgUrl)){
+            throw new BaseException("imgUrl为空");
+        }
+        if (StringUtils.isEmpty(id)){
+            throw new BaseException("id为空");
+        }
+        Boolean aBoolean = userService.updatePicture(id, imgUrl);
+        if (aBoolean!=null) {
+            return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), aBoolean);
+        } else {
+            return Result.error(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMsg());
+        }
+    }
 
 }

@@ -47,8 +47,6 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
 
     @Override
     public Optional<PersonNode> findPersonNodeById(Long id) {
-
-
         if (id == null) {
             return Optional.empty();
         }

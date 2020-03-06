@@ -20,7 +20,7 @@ import java.util.Date;
 @RequestMapping("/admin/file")
 public class FileController {
 
-    public static final String HOST_URL = "http://liaoyunfeng.top/images/";
+    public static final String HOST_URL = "http://www.liaoyunfeng.top/images/";
 
     //ftp处理文件上传
     @RequestMapping(value = "/ftpUploadImg")

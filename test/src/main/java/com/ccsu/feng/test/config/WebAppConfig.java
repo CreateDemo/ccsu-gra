@@ -1,11 +1,17 @@
 package com.ccsu.feng.test.config;
 
+import com.ccsu.feng.test.filter.ReplaceStreamFilter;
 import com.ccsu.feng.test.interceptor.AdminUserLoginInterceptor;
+import com.ccsu.feng.test.interceptor.AntiBrushInterceptor;
+import com.ccsu.feng.test.interceptor.UserLoginInterceptor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.*;
+
+import javax.servlet.Filter;
 
 /**
  * @author admin
@@ -21,6 +27,40 @@ public class WebAppConfig  implements WebMvcConfigurer {
         return new AdminUserLoginInterceptor();
     }
 
+    @Bean
+    public HandlerInterceptor getUserLoginInterceptor(){
+        return new UserLoginInterceptor();
+    }
+
+    @Bean
+    public HandlerInterceptor getAntiBrushInterceptor(){
+        return new AntiBrushInterceptor();
+    }
+
+    /**
+     * 注册过滤器
+     *
+     * @return FilterRegistrationBean
+     */
+    @Bean
+    public FilterRegistrationBean someFilterRegistration() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(replaceStreamFilter());
+        registration.addUrlPatterns("/user/page/login");
+        registration.setName("streamFilter");
+        return registration;
+    }
+
+    /**
+     * 实例化StreamFilter
+     *
+     * @return Filter
+     */
+    @Bean(name = "replaceStreamFilter")
+    public Filter replaceStreamFilter() {
+        return new ReplaceStreamFilter();
+    }
+
     @Override
     public void addViewControllers( ViewControllerRegistry registry ) {
         registry.addViewController("/error/404").setViewName("/error/404");
@@ -31,11 +71,10 @@ public class WebAppConfig  implements WebMvcConfigurer {
         registry.addViewController("/admin/index").setViewName("/admin/index");
         registry.addViewController("/admin/login").setViewName("/admin/login");
         registry.addViewController("/admin/home").setViewName("/admin/home");
-        registry.addViewController("/login").setViewName("/page/login");
         registry.addViewController("/page/login").setViewName("/page/login");
         registry.addViewController("/").setViewName("/page/index");
-        registry.addViewController("/register").setViewName("/page/register");
         registry.addViewController("/page/register").setViewName("/page/register");
+        registry.addViewController("/page/loginOut").setViewName("/page/loginOut");
 
         registry.addViewController("/admin/xi/person").setViewName("/admin/xi/person");
         registry.addViewController("/admin/xi/weapon").setViewName("/admin/xi/weapon");
@@ -62,6 +101,8 @@ public class WebAppConfig  implements WebMvcConfigurer {
         registry.addViewController("/admin/hong/relation").setViewName("/admin/hong/relation");
 
 
+
+
     }
 
     @Override
@@ -72,6 +113,15 @@ public class WebAppConfig  implements WebMvcConfigurer {
         loginRegistry.addPathPatterns("/admin/**");
         loginRegistry.excludePathPatterns("/admin/login");
         loginRegistry.excludePathPatterns("/admin/loginOut");
+        loginRegistry.excludePathPatterns("/admin/file/**");
+
+        //page用戶登录
+        InterceptorRegistration interceptorRegistration = registry.addInterceptor(getUserLoginInterceptor());
+        interceptorRegistration.addPathPatterns("/user/page/getPageUser");
+        interceptorRegistration.addPathPatterns("/page/login");
+
+        InterceptorRegistration interceptorRegistration1 = registry.addInterceptor(getAntiBrushInterceptor());
+        interceptorRegistration1.addPathPatterns("/**");
 
 //        // 排除路径
 //        loginRegistry.excludePathPatterns("/");

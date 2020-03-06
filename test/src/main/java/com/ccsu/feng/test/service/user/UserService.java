@@ -24,13 +24,15 @@ public interface UserService {
      */
     Boolean pageUserRegister(UserVO userVO);
 
+    UserBases getPageUser();
+
     /**
      * 普通用户登录
      * @param username
      * @param password
      * @return
      */
-    UserBases pageLogin(String username,String password);
+    String pageLogin(String username,String password);
 
     /**
      * 手机短信登录
@@ -38,7 +40,7 @@ public interface UserService {
      * @param smsCode
      * @return
      */
-    UserBases smsLogin(String phone,String smsCode);
+    String smsLogin(String phone,String smsCode);
 
     /**
      * 发送短信接口
@@ -63,4 +65,12 @@ public interface UserService {
      * @return
      */
     Boolean smsEditPassword(String phone,String smsCode);
+
+    /**
+     *
+     * @param id
+     * @param imgUrl
+     * @return
+     */
+    Boolean updatePicture(String id,String imgUrl);
 }

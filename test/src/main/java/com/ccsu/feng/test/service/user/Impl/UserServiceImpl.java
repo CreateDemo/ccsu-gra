@@ -16,6 +16,7 @@ import com.ccsu.feng.test.service.user.UserService;
 import com.ccsu.feng.test.utils.EncryptUtil;
 import com.ccsu.feng.test.utils.MsgUtil;
 import com.ccsu.feng.test.utils.RedisUtil;
+import com.ccsu.feng.test.utils.UserThreadLocal;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,17 @@ public class UserServiceImpl implements UserService {
     private final static String PASSWORD_KEY = "feng";
     private final static String ADMIN_USER_KEY = "admin_user_key";
     private final static String PAGE_USER_KEY = "page_user_key";
+
+
+
+    @Autowired
+    UserThreadLocal userThreadLocal;
+
+
+    /**  用户信息保存两小时**/
+    private static final int USER_MAX_AGE = 60 * 60 * 2;
     //站内 新注册的默认头像
-    private final static String PAG_USER_PICTURE = "http://liaoyunfeng.top/images/firstPicture—20200229154454-.png";
+    private final static String PAG_USER_PICTURE = "http://www.liaoyunfeng.top/images/firstPicture—20200229154454-.png";
     @Autowired
     AdminUserMapper adminUserMapper;
     @Autowired
@@ -103,21 +113,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserBases pageLogin(String username, String password) {
+    public UserBases getPageUser() {
+        if (userThreadLocal==null){
+            return null;
+        }
+        return userThreadLocal.getUser();
+    }
+
+    @Override
+    public String pageLogin(String username, String password) {
         QueryWrapper<UserAuths> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("identifier", username)
                 .eq("credential", EncryptUtil.getInstance().MD5(password, PASSWORD_KEY));
         UserAuths userAuths = userAuthsMapper.selectOne(queryWrapper);
         if (userAuths == null) {
-            throw new BaseException(ResultEnum.ADMIN_NOT_USER.getMsg());
+            throw new BaseException(ResultEnum.PASSWORD_ERROR.getMsg());
         }
         UserBases userBases = userBasesMapper.selectById(userAuths.getUserId());
-        return userBases;
+        //用户信息保存
+        redisUtil.hset(PAGE_USER_KEY,String.valueOf(userBases.getId()),userBases,USER_MAX_AGE);
+        return String.valueOf(userBases.getId());
     }
 
 
     @Override
-    public UserBases smsLogin(String phone, String smsCode) {
+    public String smsLogin(String phone, String smsCode) {
         boolean hasKey = redisUtil.hasKey(phone);
         if (!hasKey) {
             throw new BaseException(ResultEnum.PHONE_CODE_LOGTIME.getMsg());
@@ -133,8 +153,8 @@ public class UserServiceImpl implements UserService {
         //登录成功删除 key
 //        redisUtil.del(phone);   测试环境先不浪费
         //登录成功2小时过期;
-        redisUtil.hset(PAGE_USER_KEY, String.valueOf(userBases.getId()), userBases, 60 * 60 * 2);
-        return userBases;
+        redisUtil.hset(PAGE_USER_KEY, String.valueOf(userBases.getId()), userBases, USER_MAX_AGE);
+        return String.valueOf(userBases.getId());
     }
 
     @Override
@@ -178,6 +198,18 @@ public class UserServiceImpl implements UserService {
         }
         //登录成功删除 key
 //        redisUtil.del(phone); 测试环境不删除
+        return true;
+    }
+
+    @Override
+    public Boolean updatePicture(String id,String imgUrl) {
+        UserBases userBases  =new UserBases();
+        userBases.setPicture(imgUrl);
+        userBases.setId(Integer.valueOf(id));
+         userBasesMapper.updateById(userBases);
+        UserBases userBases1 = userBasesMapper.selectById(id);
+        //用户信息保存
+        redisUtil.hset(PAGE_USER_KEY,String.valueOf(userBases1.getId()),userBases1,USER_MAX_AGE);
         return true;
     }
 }

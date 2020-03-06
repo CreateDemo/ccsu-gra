@@ -1,14 +1,11 @@
 package com.ccsu.feng.test.interceptor;
 
 import com.ccsu.feng.test.entity.AdminUser;
-import com.ccsu.feng.test.utils.AdminUserThreadLocal;
 import com.ccsu.feng.test.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

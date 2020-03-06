@@ -27,7 +27,8 @@ public class TestApplicationTests {
     @Test
     public void contextLoads() {
 
-
+        long incr = redisUtil.incr("123", 60);
+        System.out.println(incr);
     }
 
 

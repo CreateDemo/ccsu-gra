@@ -20,7 +20,7 @@
   </head>
   
   <body class="login-bg">
-    <div class="login-box" id="main">
+    <div class="login-box" id="main"  @keyup.enter="login()">
         <header>
             <h1>四大名著知识图谱后台管理系统</h1>
         </header>
@@ -100,7 +100,7 @@
                         username:this.adminUser.username,
                         password:this.adminUser.password,
 				   }
-                    var url = "/user//admin/login";
+                    var url = "/user/admin/login";
                     $.ajax({
                         type: "post",
                         url: url,

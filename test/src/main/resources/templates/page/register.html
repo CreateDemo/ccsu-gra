@@ -13,7 +13,7 @@
 
 </head>
 <body>
-<div id="main">
+<div id="main" @keyup.enter="register()">
     <div id="header">
     </div>
     <div class="container">
@@ -21,7 +21,7 @@
         <div class="register">
             <div class="title">
                 <span>注册</span>
-                <a href="/login">去登录</a>
+                <a href="/page/login">去登录</a>
             </div>
             <el-form status-icon label-width="100px">
                 <div class="default">

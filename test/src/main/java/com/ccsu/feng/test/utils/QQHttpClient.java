@@ -75,7 +75,6 @@ public class QQHttpClient {
     public static JSONObject getUserInfo(String url) throws IOException {
         JSONObject jsonObject = null;
         CloseableHttpClient client = HttpClients.createDefault();
-
         HttpGet httpGet = new HttpGet(url);
         HttpResponse response = client.execute(httpGet);
         HttpEntity entity = response.getEntity();
