@@ -8,5 +8,6 @@ import com.alibaba.fastjson.JSONObject;
  */
 public interface ThirdLoginService {
 
-    void  saveThirdUserInfo(JSONObject jsonObject);
+    String  saveThirdUserInfo(String openId, JSONObject jsonObject);
+
 }

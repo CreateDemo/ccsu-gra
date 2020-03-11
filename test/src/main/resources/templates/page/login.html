@@ -93,17 +93,17 @@
                 </div>
                 <div class="icon">
                     <ul>
-                        <li data-log="icon" class="i_hover" style="cursor: pointer">
+                        <li data-log="icon" class="i_hover" title="微信登录" >
                             <img data-icon="wx" src="../../common/image/wx.png" alt=""/>
-                            <span class="prompt">微信登录</span>
+                            <span class="prompt"  style="cursor: pointer"  >微信登录</span>
                         </li>
-                        <li data-log="icon" class="i_hover" style="cursor: pointer">
+                        <li data-log="icon" class="i_hover" title="QQ登录" >
                             <img data-icon="qq" src="../../common/image//qq.png" alt=""/>
-                            <span class="prompt">QQ登录</span>
+                            <span class="prompt" style="cursor: pointer" @click="qqLogin()">QQ登录</span>
                         </li>
-                        <li data-log="icon" class="i_hover" style="cursor: pointer">
+                        <li data-log="icon" class="i_hover" title="微博登录">
                             <img data-icon="wb" src="../../common/image/wb.png" alt=""/>
-                            <span class="prompt">微博登录</span>
+                            <span class="prompt" style="cursor: pointer">微博登录</span>
                         </li>
                     </ul>
                 </div>
@@ -196,7 +196,6 @@
 </body>
 
 <script>
-
     var app = new Vue({
         el: '#main',
         data: {
@@ -517,6 +516,19 @@
                 });
 
 
+            },
+            qqLogin(){
+                window.location.href="/third/qq/login "
+                // var url = "/third//qq/login/";
+                // $.ajax({
+                //     type: "get",
+                //     url: url,
+                //     success: function (res) {
+                //     },
+                //     error: function () {
+                //         _this.$message.error('服务器错误');
+                //     }
+                // });
             },
 
 

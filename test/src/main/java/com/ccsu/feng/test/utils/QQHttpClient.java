@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public class QQHttpClient {
     //QQ互联中提供的 appid 和 appkey
-    public static final String APPID = "101854468";
-    public static final String APPKEY = "17858aa067afe9c4d6ba4be2ef90475c";
+    public static final String APPID = "101855861";
+    public static final String APPKEY = "f072968c4dddc943f6eef3f430eb8d50";
 
     private static JSONObject parseJSONP(String jsonp) {
         int startIndex = jsonp.indexOf("(");

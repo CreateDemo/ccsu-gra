@@ -422,6 +422,59 @@
                                                 </p>
                                             </div>
                                         </a>
+                                        <a href="/page/san/withPicture">
+                                            <div class="icon">
+                                                <img src="../../common/statics/images/sol_icon4.png" alt="">
+                                            </div>
+                                            <div class="info">
+                                                <h3>
+                                                    三国详图
+                                                </h3>
+                                                <p>
+                                                    地图总结<br>地势复杂
+                                                </p>
+                                            </div>
+                                        </a>
+                                        <a href="#">
+                                            <div class="icon">
+                                                <img src="../../common/statics/images/sol_icon5.png" alt="">
+                                            </div>
+                                            <div class="info">
+                                                <h3>
+                                                    门店/移动/社交/微商
+                                                </h3>
+                                                <p>
+                                                    移动/社交/门店业务<br> 帮助企业拓展移动新零售格局
+                                                </p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </li>
+                    <li id="men_sol3">
+                        <h2><a href="#">水浒传</a></h2>
+                        <div class="sub_menu sol_left">
+                            <div class="h30"></div>
+                            <div>
+                                <div class="sub_menu_list" style="width: 950px;">
+                                    <h3>红楼梦</h3>
+                                    <div class="list sol_list">
+                                        <a href="/page/person/水浒传">
+                                            <div class="icon">
+                                                <img src="../../common/statics/images/sol_icon3.png" alt="">
+                                            </div>
+                                            <div class="info">
+                                                <h3>
+                                                    人物关系
+                                                </h3>
+                                                <p>
+                                                    查询人物<br> 展示人物关系图谱
+                                                </p>
+                                            </div>
+                                        </a>
                                         <a href="#">
                                             <div class="icon">
                                                 <img src="../../common/statics/images/sol_icon4.png" alt="">
@@ -454,11 +507,58 @@
                             </div>
                         </div>
                     </li>
-                    <li>
-                        <h2><a href="#">水浒传</a></h2>
-                    </li>
-                    <li>
+                    <li id="men_sol4">
                         <h2><a href="#">红楼梦</a></h2>
+                        <div class="sub_menu sol_left">
+                            <div class="h30"></div>
+                            <div>
+                                <div class="sub_menu_list" style="width: 950px;">
+                                    <h3>红楼梦</h3>
+                                    <div class="list sol_list">
+                                        <a href="/page/person/红楼梦">
+                                            <div class="icon">
+                                                <img src="../../common/statics/images/sol_icon3.png" alt="">
+                                            </div>
+                                            <div class="info">
+                                                <h3>
+                                                    人物关系
+                                                </h3>
+                                                <p>
+                                                    查询人物<br> 展示人物关系图谱
+                                                </p>
+                                            </div>
+                                        </a>
+                                        <a href="#">
+                                            <div class="icon">
+                                                <img src="../../common/statics/images/sol_icon4.png" alt="">
+                                            </div>
+                                            <div class="info">
+                                                <h3>
+                                                    门店/移动/社交/微商
+                                                </h3>
+                                                <p>
+                                                    移动/社交/门店业务<br> 帮助企业拓展移动新零售格局
+                                                </p>
+                                            </div>
+                                        </a>
+                                        <a href="#">
+                                            <div class="icon">
+                                                <img src="../../common/statics/images/sol_icon5.png" alt="">
+                                            </div>
+                                            <div class="info">
+                                                <h3>
+                                                    门店/移动/社交/微商
+                                                </h3>
+                                                <p>
+                                                    移动/社交/门店业务<br> 帮助企业拓展移动新零售格局
+                                                </p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </li>
                     <li id="men_sol">
                         <h2><a href="#">关于作者</a></h2>
@@ -899,6 +999,18 @@
 
                 if(command==='editUpload'){
                     this.dialogFormVisible=true;
+                    var s= document.getElementsByClassName("v-modal");
+                    var index=0;
+                    var time= window.setInterval(function () {
+                        if (s.length!==0){
+                            document.body.removeChild(s[0]);
+                            clearInterval(time);
+                        }
+                        if (index===100000){
+                            clearInterval(time);
+                        }
+                        index++;
+                    },10)
                 }
             },
 

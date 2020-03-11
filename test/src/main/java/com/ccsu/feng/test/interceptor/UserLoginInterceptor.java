@@ -30,6 +30,8 @@ public class UserLoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
+
+        //普通用户登录
        String ticket = CookieUtil.getValue(httpServletRequest, "ticket");
        if (!StringUtils.isEmpty(ticket)){
            String deCode = EncryptUtil.getInstance().AESdecode(ticket, "feng");
@@ -40,7 +42,6 @@ public class UserLoginInterceptor implements HandlerInterceptor {
                    return false;
                }
                userThreadLocal.setUser((UserBases) pageUserKey);
-
            }
        }
        return true;

@@ -19,30 +19,6 @@
 </head>
 
 <style>
-    .el-input.is-disabled .el-input__inner {
-        background-color: #F5F7FA;
-        border-color: #E4E7ED;
-        color: black;
-        cursor: not-allowed;
-    }
-    .el-textarea.is-disabled .el-textarea__inner {
-        background-color: #F5F7FA;
-        border-color: #E4E7ED;
-        color: black;
-        cursor: not-allowed;
-    }
-    .avatar-uploader .el-upload {
-        border: 1px dashed #d9d9d9;
-        border-radius: 6px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .avatar-uploader .el-upload:hover {
-        border-color: #409EFF;
-    }
-
     .avatar-uploader-icon {
         font-size: 28px;
         color: #8c939d;
@@ -62,7 +38,6 @@
         padding-top: 25px;
         float: right;
     }
-
     .nav .login a {
         height: 30px;
         line-height: 30px;
@@ -102,23 +77,6 @@
         top: 16px;
     }
 
-    .link {
-        fill: none;
-        stroke: #666;
-        stroke-width: 1.5px;
-    }
-
-    #licensing {
-        fill: green;
-    }
-
-    .link.licensing {
-        stroke: green;
-    }
-
-    .link.resolved {
-        stroke-dasharray: 0, 21;
-    }
 
     circle {
         fill: #ccc;
@@ -131,25 +89,26 @@
         pointer-events: none;
         text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
     }
-
-    .linetext {
-        font-size: 12px;
-    }
-
-    .tooltip {
+    .el-icon-plus:before {
         position: absolute;
-        width: 120px;
-        height: auto;
-        font-family: simsun;
-        font-size: 14px;
-        text-align: center;
-        border-style: solid;
-        border-width: 1px;
-        background-color: white;
-        border-radius: 5px;
+        top: 25px;
+        font-size: 30px;
+        margin-left: 60px;
+        content: "\e6d9";
+        cursor: pointer;
+    }
+    .el-icon-minus:before {
+        position: absolute;
+        top: 25px;
+        font-size: 30px;
+        margin-left: 140px;
+        content: "\e6d8";
+        cursor: pointer;
     }
 </style>
+
 <body>
+
 <div id="table">
 
     <!--导航开始-->
@@ -576,19 +535,9 @@
                             </div>
                         </div>
                     </li>
+                    <i title="放大"  @click="zoomMax()" class="el-icon-plus"></i>
 
-                    <li @keyup.enter="selectInputName()">
-                        <el-input style="top: 20px; margin-left: 10px"
-                                placeholder="请输入内容"
-                                v-model="input"
-                                clearable>
-                        </el-input>
-                    </li>
-
-                    <li>
-                        <el-button style="position:absolute;top: 20px; margin-left: 20px" type="primary" @click="selectInputName()">查询</el-button>
-                    </li>
-
+                    <i title="缩小"  @click="zoomMin()" class="el-icon-minus"></i>
                 </ul>
             </div>
 
@@ -631,42 +580,6 @@
                     </el-dialog>
 
 
-                    <!--         修改-->
-                    <el-dialog :title="personName" :visible.sync="dialogFormVisibleShowPerson">
-                        <el-form :model="showPersonDtail">
-                            <el-form-item label="名字" :label-width="formLabelWidth">
-                            <template slot-scope="scope">
-                                <el-image
-                                        style="width: 130px; height: 130px"
-                                        :src="showPersonDtail.picture"
-                                        :preview-src-list="showPersonDtail.pictures">
-                                    >
-                                </el-image>
-                            </template>
-                            </el-form-item>
-
-                            <el-form-item label="名字" :label-width="formLabelWidth">
-                                <el-input   :disabled="flag" v-model="showPersonDtail.name" autocomplete="off" style="color: black"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="称号" :label-width="formLabelWidth">
-                                <el-input  style="color: black" :disabled="flag" v-model="showPersonDtail.alias" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="人物性格特点" :label-width="formLabelWidth">
-                                <el-input  style="color: black" :disabled="flag" v-model="showPersonDtail.character" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="人物简介" :label-width="formLabelWidth">
-                                <el-input style="color: black" :disabled="flag" v-model="showPersonDtail.content"  type="textarea" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                        </el-form>
-
-                        <div slot="footer" class="dialog-footer">
-                            <el-button type="primary" @click="dialogFormVisibleShowPerson=false">退出</el-button>
-                        </div>
-                    </el-dialog>
 
 
 
@@ -694,38 +607,11 @@
     </div>
     <!--导航结束-->
     <!--轮播开始-->
-    <div>
-        <div class="s-side" style="
-    position: absolute;
-    top: 80px;">
-            <ul>
-                <!--这部分是导航栏信息。-->
-                <li class="s-firstItem first">
-                    <a href="#">
-                        <i class="fa fa-home"></i>
-                        <span>{{type}}人物关系</span>
-                    </a>
-                </li>
-                <li class="first">
-                    <div class="d-firstNav s-firstNav clearfix">
-                        <i class="fa fa-bars"></i>
-                        <span>人物浏览</span>
-                        <i class="fa fa-caret-right fr "></i>
-                    </div>
-                    <ul class="d-firstDrop s-firstDrop">
-                        <li style="overflow: scroll;height: 450px;
-">
-                            <div v-for="(item,i) in personList">
-                                <div class="s-secondNav swiper-slide" @click="getPersonNodeByName(item.name)">
-                                    <span >{{item.name}}</span>
-                                </div>
-
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-
-            </ul>
+    <div class="overall">
+        <div>
+            <img    class="drag" id="img" src="../../common/image/sanDetail.png" alt @mousewheel="rollImg(this)" ref="bigImage"
+                 style="width: 600px; height:500px;position: fixed;left: 300px;top: 60px;
+                 cursor: pointer ;" v-drag="flag"  >
         </div>
 
     </div>
@@ -733,45 +619,36 @@
 
 
 </div>
-<a type="button" id="fullscreen" class="btn btn-default visible-lg visible-md" style="
-    position: absolute;
-    top: 90px;
-    left: 1300px;
-    color: black;
-    cursor: pointer;
-"><i class="fa fa-refresh" style="color: black" aria-hidden="true"></i> 切换全屏</a>
-<div id="content">
-    <script>
-        function enterfullscreen() { //进入全屏
-            var docElm = document.getElementById("svg");
-            //W3C
-            if (docElm.requestFullscreen) {
-                docElm.requestFullscreen();
-            }
-            //FireFox
-            else if (docElm.mozRequestFullScreen) {
-                docElm.mozRequestFullScreen();
-            }
-            //Chrome等
-            else if (docElm.webkitRequestFullScreen) {
-                docElm.webkitRequestFullScreen();
-            }
-            //IE11
-            else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            }
-        }
 
-        $('#fullscreen').on('click', function () {
-            enterfullscreen()
-        })
-
-    </script>
-</div>
 
 </body>
 
 <script>
+    Vue.directive('drag',{
+
+        inserted:function(el,binding){
+            el.onmousedown=function(e){
+                e.stopPropagation();
+                let disx = e.pageX - el.offsetLeft;
+                let disy = e.pageY - el.offsetTop;
+                document.onmousemove = function (e){
+                    e.preventDefault();
+                    el.style.left = e.pageX - disx+'px';
+                    el.style.top = e.pageY - disy+'px';
+                }
+                document.onmouseup = function(){
+                    document.onmousemove = document.onmouseup = null;
+                    //binding 传参，可忽略
+                    if(binding && binding.value){
+                        binding.value.clientX=parseInt(el.style.left);
+                        binding.value.clientY=parseInt(el.style.top);
+                    }
+
+                }
+            }
+        },
+    });
+
     var app = new Vue({
         el: '#table',
         data: {
@@ -795,334 +672,17 @@
             flag:true,
             input:'',
             type:'西游记',
+            flag:true,
 
         },
         mounted() {
         },
         created() {
-            this.getParam();
-            this.getListNodeLink();
-            this.getListNode();
             this.getPageUser();
-            this.getPersonList();
+
         },
         methods: {
 
-            getListNode() {
-                var chaxuntext = $(".chaxuntext").text;
-                // http://blog.thomsonreuters.com/index.php/mobile-patent-suits-graphic-of-the-day/
-                var links = this.linksNode;
-                console.log(links)
-                var nodes = {};
-                let _this=this;
-                links.forEach(function (link) {//参考https://stackoverflow.com/questions/23986466/d3-force-layout-linking-nodes-by-name-instead-of-index
-                    //利用source和target名称进行连线以及节点的确认
-                    link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
-                    link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
-                });
-
-                var width = 1300;
-                var height = 700;
-
-                var force = d3.layout.force()//layout将json格式转化为力学图可用的格式
-                    .nodes(d3.values(nodes))//设定节点数组
-                    .links(links)//设定连线数组
-                    .size([width, height])//大小
-                    .linkDistance(150)//连接线长度
-                    .charge(-1500)//值为+，则相互吸引，绝对值越大吸引力越大。值为-，则相互排斥，绝对值越大排斥力越大
-                    .on("tick", tick)//指时间间隔，隔一段时间刷新一次画面
-                    .start();//开始转换
-
-                var zoom = d3.behavior.zoom()//缩放配置，
-                    .scaleExtent([0, 2])//缩放比例
-                    .on("zoom", zoomed);
-
-                function zoomed() {//缩放函数
-
-                    svg.selectAll("g").attr("transform",//svg下的g标签移动大小
-                        "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-                }
-
-                var svg = d3.select("body").append("svg")//添加svg元素进行图形的绘制
-                    .attr("width", width)
-                    .attr("height", height)
-                    .attr("id", "svg")
-                    .attr("style", "background-color: #ddd;")
-                    .call(zoom)
-                ;
-                //箭头
-                var marker =//注意SVG规范中明确指出，附加到一个'Marker'元素上的“事件属性和事件的listener”不会被处理
-                    svg.append("marker")//添加一个marker标签来绘制箭头
-                        .attr("id", "resolved")//箭头id，用于其他标记进行引用时的url
-                        .attr("markerUnits", "userSpaceOnUse")//定义标记的坐标系统，userSpaceOnUse表示按照引用的元件来决定，strokeWidth按照用户单位决定
-                        .attr("viewBox", "0 -5 10 10")//坐标系的区域
-                        .attr("refX", 40)//箭头坐标
-                        .attr("refY", 0)
-                        .attr("markerWidth", 12)//标识的大小
-                        .attr("markerHeight", 12)
-                        .attr("orient", "auto")//绘制方向，可设定为：auto（自动确认方向）和 角度值
-                        .attr("stroke-width", 3)//箭头宽度
-                        .append("path")
-                        .attr("d", "M0,-5L10,0L0,5")//绘制箭头，路径为一个三角形，有疑问参考svg的path http://www.runoob.com/svg/svg-path.html
-                        .attr('fill', '#000000');//箭头颜色
-                //设置连接线
-                var edges_line = svg.append("g").selectAll(".edgepath")
-                    .data(force.links())//连线数据
-                    .enter()//当数组中的个数大于元素个数时，由d3创建空元素并与数组中超出的部分进行绑定。
-                    //可以参考http://www.ourd3js.com/wordpress/797/ enter、exit、update的区别
-                    .append("path")//添加path标签
-                    .attr({
-                        'd': function (d) {
-                            return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y
-                        },//变量 d 是由D3.js提供的一个在匿名函数中的可用变量。这个变量是对当前要处理的元素的_data_属性的引用。
-                        'class': 'edgepath',//定义该path标签class为edgepath
-                        'id': function (d, i) {
-                            return 'edgepath' + i;
-                        }
-                    })// i也是d3.js提供的变量，表示当前处理的HTML元素在已选元素选集中的索引值
-                    .style("stroke", "#A254A2")//设置线条颜色
-                    .style("stroke-width", 1)//线条粗细
-                    .attr("marker-end", "url(#resolved)");//根据箭头标记的id号引用箭头
-
-                //连线上的文字
-                var edges_text = svg.append("g").selectAll(".edgelabel")
-                    .data(force.links())
-                    .enter()
-                    .append("text")//添加text标签
-                    .attr({
-                        'class': 'edgelabel',//定义该text标签class为edgelabel
-                        'id': function (d, i) {
-                            return 'edgepath' + i;
-                        },
-                        'dx': 60,//在连线上的坐标
-                        'dy': 0
-                    });
-
-                //设置线条上的文字路径
-                edges_text.append('textPath')
-                    .attr('xlink:href', function (d, i) {
-                        return '#edgepath' + i
-                    })
-                    .style("pointer-events", "none")
-                    .text(function (d) {
-                        return d.relationName;
-                    });
-
-                function drag() {//拖拽函数
-                    return force.drag()
-                        .on("dragstart", function (d) {
-                            d3.event.sourceEvent.stopPropagation(); //取消默认事件
-                            d.fixed = true;    //拖拽开始后设定被拖拽对象为固定
-
-                        });
-                    //.on("drag", dragmove);
-
-                }
-
-                //圆圈的提示文字 根据需要到数据库中进行读取数据
-                var tooltip = d3.select("body")
-                    .append("div")//添加div并设置成透明
-                    .attr("class", "tooltip")
-                    .style("opacity", 0.0)
-                    .style("color", "black");
-
-
-                //圆圈
-                var circle = svg.append("g")
-                    .selectAll("circle")
-                    .data(force.nodes())//表示使用force.nodes数据
-                    .enter().append("circle")
-                    .style("fill", function (node) {
-                        var color;//圆圈背景色
-                        var link = links[node.index];
-                        if (link != undefined) {
-
-                            if (link.source.name == node.name && node.name == chaxuntext) {
-                                color = "#F6E8E9";
-                            } else {
-                                color = "#F9EBF9";
-                            }
-                        }
-                        return color;
-                    })
-                    .style('stroke', function (node) { //
-                        var color;//圆圈边框的颜色
-                        var link = links[node.index];//
-                        if (link != undefined) {
-                            if (node.name == link.source.name && node.name == chaxuntext) {
-                                color = "#B43232";
-                            } else {
-                                color = "#A254A2";
-                            }
-                        }
-                        return color;
-                    })
-                    .attr("r", 38)//设置圆圈半径
-                    .on("click", function (node) {
-                        //单击时让连接线加粗
-                        edges_line.style("stroke-width", function (line) {
-
-                            if (line.source.name == node.name || line.target.name == node.name) {//当与连接点连接时变粗
-                                return 4;
-
-                            } else {
-                                return 1;
-                            }
-                        });
-                        circle.style('stroke-width', 1);//所有的圆圈边框
-                        d3.select(this).style('stroke-width', 4);//被选中的圆圈边框
-                    })
-                    .on("dblclick", function (d) {
-                        //双击节点时节点恢复拖拽
-                        d.fixed = false;
-                        _this.showPerson(d.name);
-                    })
-                    .on("mouseover", function (d) {
-                        tooltip.html("双击查看人物详情")
-                            .style("left", (d3.event.pageX) + "px")
-                            .style("top", (d3.event.pageY + 20) + "px")
-                            .style("opacity", 1.0);
-
-                    })
-                    .on("mousemove", function (d) {
-                        tooltip.style("left", (d3.event.pageX) + "px")
-                            .style("top", (d3.event.pageY + 20) + "px");
-
-                    })
-                    .on("mouseout", function (d) {
-                        tooltip.style("opacity", 0.0);
-
-                    })
-                    .call(drag());//使顶点可以被拖动
-
-
-                svg.selectAll("g").call(drag());//为svg下的所有g标签添加拖拽事件
-                //svg.selectAll("circle").call(drag());
-                //svg.selectAll("path").call(drag());
-                svg.on("dblclick.zoom", null);//取消svg和圆圈的双击放大事件（d3中默认开启7个事件，关闭防止与上面的双击事件冲突）
-                circle.on("dblclick.zoom", null);
-
-
-                var text = svg.append("g").selectAll("text")
-                    .data(force.nodes())
-                    //返回缺失元素的占位对象（placeholder），指向绑定的数据中比选定元素集多出的一部分元素。
-                    .enter()
-                    .append("text")//添加text标签
-                    .attr("dy", ".35em") //将文字下移
-                    .attr("text-anchor", "middle")//在圆圈中加上数据
-                    .style('fill', function (node) {
-                        var color;//文字颜色
-                        var link = links[node.index];
-                        if (link != undefined) {
-
-                            if (node.name == link.source.name && node.name == chaxuntext) {
-                                color = "#B43232";
-                            } else {
-                                color = "#A254A2";
-                            }
-                        }
-                        return color;
-                    }).attr('x', function (d) {
-                        // console.log(d.name+"---"+ d.name.length);
-                        var re_en = /[a-zA-Z]+/g;
-                        //如果是全英文，不换行
-                        if (d.name.match(re_en)) {
-                            d3.select(this).append('tspan')//添加tspan用来方便时使用绝对或相对坐标来调整文本
-                                .attr('x', 0)
-                                .attr('y', 2)
-                                .text(function () {
-                                    return d.name;
-                                });
-                        }
-                        //如果小于8个字符，不换行
-                        else if (d.name.length <= 8) {
-                            d3.select(this).append('tspan')
-                                .attr('x', 0)
-                                .attr('y', 2)
-                                .text(function () {
-                                    return d.name;
-                                });
-                        } else if (d.name.length >= 16) {//大于16个字符时，将14个字后的内容显示为。。。
-                            var top = d.name.substring(0, 8);
-                            var bot = d.name.substring(8, 14) + "...";
-
-                            d3.select(this).text(function () {
-                                return '';
-                            });
-
-                            d3.select(this).append('tspan')//前n个字
-                                .attr('x', 0)
-                                .attr('y', -7)
-                                .text(function () {
-                                    return top;
-                                });
-
-                            d3.select(this).append('tspan')//后n个字
-                                .attr('x', 0)
-                                .attr('y', 10)
-                                .text(function () {
-                                    return bot;
-                                });
-
-                        }
-                        else {//8-16字符分两行显示
-                            var top = d.name.substring(0, 8);
-                            var bot = d.name.substring(8, d.name.length);
-
-                            d3.select(this).text(function () {
-                                return '';
-                            });
-
-                            d3.select(this).append('tspan')
-                                .attr('x', 0)
-                                .attr('y', -7)
-                                .text(function () {
-                                    return top;
-                                });
-
-                            d3.select(this).append('tspan')
-                                .attr('x', 0)
-                                .attr('y', 10)
-                                .text(function () {
-                                    return bot;
-                                });
-                        }
-
-                    });
-
-
-                function tick() {//刷新页面函数
-                    circle.attr("transform", transform1);//圆圈
-                    text.attr("transform", transform1);//顶点文字
-                    edges_line.attr('d', function (d) { //连接线
-                        var path = 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
-                        return path;
-                    });
-
-                    edges_text.attr('transform', function (d, i) {//连线上的文字
-                        if (d.target.x < d.source.x) {//判断起点和终点的位置，来让文字一直显示在线的上方且一直是正对用户
-                            bbox = this.getBBox();//获取矩形空间,并且调整翻转中心。（因为svg与css中的翻转不同，具体区别可看http://www.zhangxinxu.com/wordpress/2015/10/understand-svg-transform/）
-                            rx = bbox.x + bbox.width / 2;
-                            ry = bbox.y + bbox.height / 2;
-                            return 'rotate(180 ' + rx + ' ' + ry + ')';
-                        }
-                        else {
-                            return 'rotate(0)';
-                        }
-                    })
-                        .attr('dx', function (d, i) {
-                            return Math.sqrt(Math.pow(d.target.x - d.source.x, 2) + Math.pow(d.target.y - d.source.y, 2)) / 2 - 20;
-                            //设置文字一直显示在线的中间
-
-                        })
-                    ;
-                }
-
-                //设置圆圈和文字的坐标
-                function transform1(d) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                }
-            },
             getPageUser() {
                 let _this = this;
                 var url = "/user/page/getPageUser";
@@ -1299,166 +859,46 @@
                     },10)
                 }
             },
-            getParam() {
-                let url = location.search; //获取url中"?"符后的字串
-                if (url.indexOf("?") != -1) {
-                    let str = url.substr(1);
-                    let strs = str.split("&");
-                    this.type = decodeURIComponent(strs[0].replace("type=", ""));
-                    console.log(this.type);
 
-                }
-            },
-            getPersonList() {
-                let _this = this;
-                let postData = {
-                    type: _this.type,
-                }
-                var url = "/page/personNode/getPersonNodeByType";
-                $.ajax({
-                    type: "get",
-                    url: url,
-                    data: postData,
-                    success: function (res) {
-                        if (res.code === '200') {
-                            _this.personList = res.data;
-                        }
-
-                    },
-                    error: function () {
-                        _this.$message.error('服务器错误');
-                    }
-                });
-
-            },
-            getListNodeLink() {
-                let _this = this;
-                let postData = {
-                    type: _this.type,
-                }
-                var url = "/page/personNode/getPersonNodRelationByType";
-                $.ajax({
-                    type: 'GET',
-                    url: url,
-                    data: postData,
-                    async: false,
-                    success: function (res) {
-                        console.log(res);
-                        if (res.code === '200') {
-                            _this.linksNode = res.data;
-                        }
-                    },
-                    error: function () {
-                    }
-                });
-            },
-            getPersonNodeByName(name){
-                let _this = this;
-                let postData = {
-                    name: name,
-                }
-                console.log(postData);
-                var url = "/page/personNode/getPersonNodRelationByName";
-                $.ajax({
-                    type: "get",
-                    url: url,
-                    data: postData,
-                    success: function (res) {
-                        console.log(res);
-                        if (res.code === '200') {
-                            _this.linksNode=res.data;
-                            document.body.removeChild(document.getElementById("svg"));
-                            _this.getListNode();
-                        }
-                    },
-                    error: function () {
-                        _this.$message.error('服务器错误');
-                    }
-                });
-
-
-            },
-
-            showPerson(name){
-                this.personName=name;
-                this.dialogFormVisibleShowPerson=true;
-
-                let _this = this;
-                let postData = {
-                    name: name,
-                }
-                var url = "/page/personNode/getPersonNodeByName";
-                $.ajax({
-                    type: "get",
-                    url: url,
-                    data: postData,
-                    async:false,
-                    success: function (res) {
-                        console.log(res);
-                        if (res.code === '200') {
-                           _this.showPersonDtail=res.data;
-                        }
-                    },
-                    error: function () {
-                        _this.$message.error('服务器错误');
-                    }
-                });
-                console.log(this.dialogFormVisibleShowPerson)
-                var s= document.getElementsByClassName("v-modal");
-                var index=0;
-                var time= window.setInterval(function () {
-                    if (s.length!==0){
-                        document.body.removeChild(s[0]);
-                        clearInterval(time);
-                    }
-                    if (index===100000){
-                        clearInterval(time);
-                    }
-                    index++;
-                },10)
-            },
-
-            selectInputName(){
-
-                let _this = this;
-                let postData = {
-                    name: _this.input,
-                    relationType:_this.type,
-                }
-
-                var url = "/page/personNode/getPersonNodeLikeByName";
-                $.ajax({
-                    type: "get",
-                    url: url,
-                    data: postData,
-                    async:false,
-                    success: function (res) {
-                        console.log(res);
-                        if (res.code !== '200') {
-                            document.body.removeChild(document.getElementById("svg"));
-                            _this.$message.error(res.msg);
-                            return;
-                        }
-                        _this.linksNode=res.data;
-                        document.body.removeChild(document.getElementById("svg"));
-                        _this.getListNode();
-                        _this.$message({
-                            message: '查询成功！',
-                            type: 'success'
-                        });
-                    },
-                    error: function () {
-                        _this.$message.error('服务器错误');
-                    }
-                });
-            },
             handleClose(done) {
                 this.$confirm('确认关闭？')
                     .then(_ => {
                         done();
                     })
                     .catch(_ => {});
-            }
+            },
+            rollImg() {
+                /* 获取当前页面的缩放比
+                      若未设置zoom缩放比，则为默认100%，即1，原图大小
+                  */
+                var zoom = parseInt(this.$refs.bigImage.style.zoom) || 100;
+                /* event.wheelDelta 获取滚轮滚动值并将滚动值叠加给缩放比zoom
+                      wheelDelta统一为±120，其中正数表示为向上滚动，负数表示向下滚动
+                  */
+                zoom += event.wheelDelta / 10;
+                /* 最小范围 和 最大范围 的图片缩放尺度 */
+                if (zoom >= 50 && zoom <350) {
+                    this.$refs.bigImage.style.zoom = zoom + "%";
+                }
+                return false;
+            },
+            zoomMax(){
+                var zoom = parseInt(this.$refs.bigImage.style.zoom) || 100;
+               console.log(zoom)
+                zoom+=10;
+                if (zoom >= 50 && zoom <350) {
+                    this.$refs.bigImage.style.zoom = zoom + "%";
+                }
+            },
+            zoomMin(){
+                var zoom = parseInt(this.$refs.bigImage.style.zoom) || 100;
+                console.log(zoom)
+                zoom-=10;
+                if (zoom >= 50 && zoom <350) {
+                    this.$refs.bigImage.style.zoom = zoom + "%";
+                }
+            },
+
         }
     })
 

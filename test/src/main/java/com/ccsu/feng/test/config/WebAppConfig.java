@@ -103,6 +103,7 @@ public class WebAppConfig  implements WebMvcConfigurer {
 
         //page
         registry.addViewController("/page/person").setViewName("/page/person");
+        registry.addViewController("/page/san/withPicture").setViewName("/page/san/withPicture");
 
 
 

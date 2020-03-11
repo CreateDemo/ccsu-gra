@@ -2,11 +2,16 @@ package com.ccsu.feng.test.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ccsu.feng.test.exception.BaseException;
+import com.ccsu.feng.test.service.user.ThirdLoginService;
+import com.ccsu.feng.test.utils.CookieUtil;
+import com.ccsu.feng.test.utils.EncryptUtil;
 import com.ccsu.feng.test.utils.QQHttpClient;
 import com.ccsu.feng.test.utils.RedisUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,6 +23,7 @@ import java.net.URLEncoder;
 import java.util.UUID;
 
 /**
+ * 第三方登录
  * @author admin
  * @create 2020-02-29-22:02
  */
@@ -32,14 +38,17 @@ public class ThirdPartyLoginController {
     @Autowired
     RedisUtil redisUtil;
 
+    @Autowired
+    ThirdLoginService thirdLoginService;
+
     @GetMapping("/qq/login")
     public String qq(HttpSession session) throws UnsupportedEncodingException {
         //QQ互联中的回调地址
-        String backUrl = httpQQ + "/index";
+        String backUrl = httpQQ + "/third/index";
         //用于第三方应用防止CSRF攻击
         String uuid = UUID.randomUUID().toString().replaceAll("-","");
         redisUtil.set(QQ_STATA,uuid);
-//        session.setAttribute("state",uuid);
+        session.setAttribute("state",uuid);
         //Step1：获取Authorization Code
         String url = "https://graph.qq.com/oauth2.0/authorize?response_type=code"+
                 "&client_id=" + QQHttpClient.APPID +
@@ -77,15 +86,13 @@ public class ThirdPartyLoginController {
         url = "https://graph.qq.com/user/get_user_info?access_token=" + access_token +
                 "&oauth_consumer_key="+ QQHttpClient.APPID +
                 "&openid=" + openid;
-        //返回用户的信息
         JSONObject jsonObject = QQHttpClient.getUserInfo(url);
-
-
-        //也可以放到Redis和mysql中，只取出了部分数据，根据自己需要取
-        session.setAttribute("openid",openid);  //openid,用来唯一标识qq用户
-        session.setAttribute("nickname",(String)jsonObject.get("nickname")); //QQ名
-        session.setAttribute("figureurl_qq_2",(String)jsonObject.get("figureurl_qq_2")); //大小为100*100像素的QQ头像URL
-
-        return "redirect:/home";
+        String ticket = thirdLoginService.saveThirdUserInfo(openid, jsonObject);
+        if (!StringUtils.isEmpty(ticket)) {
+            String cookie = EncryptUtil.getInstance().AESencode(ticket, "feng");
+            CookieUtil.set(response, "ticket", cookie, true);
+        }
+        //返回主页
+        return "redirect:/";
     }
 }

@@ -35,7 +35,7 @@ import java.util.UUID;
 @Slf4j
 public class WebLogAop {
 
-    @Pointcut("(execution (* com.ccsu.feng.test.controller.*.*(..)))")
+    @Pointcut("(execution (* com.ccsu.feng.test.controller..*.*(..)))")
     public void webLog(){
     }
 

@@ -9,6 +9,7 @@ import com.ccsu.feng.test.entity.AdminUser;
 import com.ccsu.feng.test.entity.UserAuths;
 import com.ccsu.feng.test.entity.UserBases;
 import com.ccsu.feng.test.entity.vo.UserVO;
+import com.ccsu.feng.test.enums.LoginTime;
 import com.ccsu.feng.test.enums.LoginType;
 import com.ccsu.feng.test.enums.ResultEnum;
 import com.ccsu.feng.test.exception.BaseException;
@@ -42,9 +43,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserThreadLocal userThreadLocal;
 
-
-    /**  用户信息保存两小时**/
-    private static final int USER_MAX_AGE = 60 * 60 * 2;
     //站内 新注册的默认头像
     private final static String PAG_USER_PICTURE = "http://www.liaoyunfeng.top/images/firstPicture—20200229154454-.png";
     @Autowired
@@ -131,7 +129,7 @@ public class UserServiceImpl implements UserService {
         }
         UserBases userBases = userBasesMapper.selectById(userAuths.getUserId());
         //用户信息保存
-        redisUtil.hset(PAGE_USER_KEY,String.valueOf(userBases.getId()),userBases,USER_MAX_AGE);
+        redisUtil.hset(PAGE_USER_KEY,String.valueOf(userBases.getId()),userBases, LoginTime.SAVE_LOGIN_TIME.getTime());
         return String.valueOf(userBases.getId());
     }
 
@@ -153,7 +151,7 @@ public class UserServiceImpl implements UserService {
         //登录成功删除 key
 //        redisUtil.del(phone);   测试环境先不浪费
         //登录成功2小时过期;
-        redisUtil.hset(PAGE_USER_KEY, String.valueOf(userBases.getId()), userBases, USER_MAX_AGE);
+        redisUtil.hset(PAGE_USER_KEY, String.valueOf(userBases.getId()), userBases, LoginTime.SAVE_LOGIN_TIME.getTime());
         return String.valueOf(userBases.getId());
     }
 
@@ -209,7 +207,7 @@ public class UserServiceImpl implements UserService {
          userBasesMapper.updateById(userBases);
         UserBases userBases1 = userBasesMapper.selectById(id);
         //用户信息保存
-        redisUtil.hset(PAGE_USER_KEY,String.valueOf(userBases1.getId()),userBases1,USER_MAX_AGE);
+        redisUtil.hset(PAGE_USER_KEY,String.valueOf(userBases1.getId()),userBases1,LoginTime.SAVE_LOGIN_TIME.getTime());
         return true;
     }
 }
