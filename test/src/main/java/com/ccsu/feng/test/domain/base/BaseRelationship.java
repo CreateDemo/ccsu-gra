@@ -34,14 +34,17 @@ public class BaseRelationship<S extends BaseNode, E extends BaseNode> extends Al
     @EndNode
     private E end;
 
+    private String type;
+
     public BaseRelationship(){
     }
 
-    public BaseRelationship(String name,S start,E end){
+    public BaseRelationship(String name,S start,E end,String type){
         this.name =name;
         this.createTime=LocalDateTime.now().toString();
         this.start=start;
         this.end=end;
+        this.type=type;
     }
 
     @Override
@@ -84,5 +87,13 @@ public class BaseRelationship<S extends BaseNode, E extends BaseNode> extends Al
 
     public void setEnd(E end) {
         this.end = end;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -7,6 +7,7 @@ import com.ccsu.feng.test.domain.node.PersonNode;
 import com.ccsu.feng.test.domain.node.PlaceNode;
 import com.ccsu.feng.test.domain.node.WeaponNode;
 import com.ccsu.feng.test.domain.vo.ListRelationVO;
+import com.ccsu.feng.test.domain.vo.PersonNodeRelationsListVO;
 import com.ccsu.feng.test.repository.*;
 import com.ccsu.feng.test.service.node.IBaseRelationshipService;
 import com.ccsu.feng.test.utils.PageResult;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.SchemaOutputResolver;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,7 +47,6 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
     @Autowired
     BaseNodeRepository baseNodeRepository;
 
-
     @Override
     public BaseRelationship addRelationship(BaseRelationship relationship) {
         if (relationship == null) {
@@ -57,15 +58,16 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
     }
 
     @Override
-    public Boolean updateRelationById(Long id,String name) {
-         relationshipRepository.updateRelationById(id, name);
-         return true;
+    public Boolean updateRelationById(Long id, String name) {
+        relationshipRepository.updateRelationById(id, name);
+        return true;
     }
+
     @Override
     public BaseRelationship addRelationship(String name, BaseNode startNode, BaseNode endNode) {
 
         log.info("startNode->{},endNode->{} ", startNode, endNode);
-        BaseRelationship relationship = new BaseRelationship(name, startNode, endNode);
+        BaseRelationship relationship = new BaseRelationship(name, startNode, endNode, startNode.getType());
         BaseRelationship baseRelationship = relationshipRepository.save(relationship);
         log.info("{} - >保存成功 ", baseRelationship);
         return baseRelationship;
@@ -108,7 +110,6 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
     }
 
 
-
     @Override
     public List<Map<String, String>> findNodeName(String nodeType, String type) {
         List<Map<String, String>> list = new ArrayList<>();
@@ -128,7 +129,7 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
                 list.add(map);
             }
         }
-        if ("deedsNode".equals(nodeType)){
+        if ("deedsNode".equals(nodeType)) {
             List<DeedsNode> nodeName = deedsNodeRepository.getListDeedsNodeByType(type);
             for (DeedsNode deedsNode : nodeName) {
                 Map<String, String> map = new HashMap<>();
@@ -137,7 +138,7 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
             }
         }
 
-        if ("placeNode".equals(nodeType)){
+        if ("placeNode".equals(nodeType)) {
             List<PlaceNode> nodeName = placeNodeRepository.getListPlaceNodeByType(type);
             for (PlaceNode placeNode : nodeName) {
                 Map<String, String> map = new HashMap<>();
@@ -150,7 +151,7 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
     }
 
     @Override
-    public PageResult<ListRelationVO> getListRelationByPage(int pageIndex, int pageSize,String type) {
+    public PageResult<ListRelationVO> getListRelationByPage(int pageIndex, int pageSize, String type) {
         int pageIndexNum = 0;
         if (pageIndex > 1) {
             pageIndexNum = (pageIndex - 1) * pageSize;
@@ -165,6 +166,54 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
         log.info("pageIndex->{},pageSize->{}", pageIndex, pageSize);
         return new PageResult<>(pageIndex, pageSize, relationshipRepository.getBaseRelationshipCount(type), list);
 
+    }
+
+    @Override
+    public List<PersonNodeRelationsListVO> getPersonNodRelationByType(String type) {
+        List<BaseRelationship> all = (List<BaseRelationship>) relationshipRepository.findAll();
+        List<BaseRelationship> collect = all.stream().filter(x -> type.equals(x.getType()) && (x.getStart() instanceof PersonNode))
+                .collect(Collectors.toList());
+
+        List<PersonNodeRelationsListVO> listVOS = new ArrayList<>(collect.size());
+        collect.forEach(x -> {
+            PersonNodeRelationsListVO personNodeRelationsListVO = new PersonNodeRelationsListVO();
+            personNodeRelationsListVO.setSource(x.getStart().getName());
+            personNodeRelationsListVO.setRelationName(x.getName());
+            personNodeRelationsListVO.setTarget(x.getEnd().getName());
+            listVOS.add(personNodeRelationsListVO);
+        });
+        return listVOS;
+    }
+
+    @Override
+    public List<PersonNodeRelationsListVO> getPersonNodRelationByName(String name) {
+        PersonNode personNodeByName = personNodeRepository.getPersonNodeByName(name);
+        List<PersonNodeRelationsListVO> listVOS = new ArrayList<>();
+        if (personNodeByName.getRelationships() == null) {
+            PersonNodeRelationsListVO personNodeRelationsListVO = new PersonNodeRelationsListVO();
+            personNodeRelationsListVO.setSource(personNodeByName.getName());
+            personNodeRelationsListVO.setTarget(personNodeByName.getName());
+            listVOS.add(personNodeRelationsListVO);
+            return listVOS;
+        }
+        Set<BaseRelationship> relationships = personNodeByName.getRelationships();
+        for (BaseRelationship baseRelationship : relationships) {
+            PersonNodeRelationsListVO personNodeRelationsListVO = new PersonNodeRelationsListVO();
+            personNodeRelationsListVO.setRelationName(baseRelationship.getName());
+            personNodeRelationsListVO.setSource(personNodeByName.getName());
+            personNodeRelationsListVO.setTarget(baseRelationship.getEnd().getName());
+            listVOS.add(personNodeRelationsListVO);
+            if (baseRelationship.getEnd().getRelationships() != null) {
+                for (BaseRelationship baseRelationship1 : baseRelationship.getEnd().getRelationships()) {
+                    PersonNodeRelationsListVO personNodeRelationsListVO1 = new PersonNodeRelationsListVO();
+                    personNodeRelationsListVO1.setRelationName(baseRelationship1.getName());
+                    personNodeRelationsListVO1.setSource(baseRelationship1.getName());
+                    personNodeRelationsListVO1.setTarget(baseRelationship1.getEnd().getName());
+                    listVOS.add(personNodeRelationsListVO1);
+                }
+            }
+        }
+        return listVOS;
     }
 
 }

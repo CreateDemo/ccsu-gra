@@ -2,6 +2,7 @@ package com.ccsu.feng.test.service.node;
 
 import com.ccsu.feng.test.domain.base.BaseRelationship;
 import com.ccsu.feng.test.domain.node.PersonNode;
+import com.ccsu.feng.test.domain.vo.PersonNodeRelationsListVO;
 import com.ccsu.feng.test.domain.vo.PersonVO;
 import com.ccsu.feng.test.utils.PageResult;
 
@@ -44,6 +45,8 @@ public interface IPersonNodeService {
      * @description 根据名称获取人物节点
      */
     PersonNode getPersonNodeByName(String name);
+
+    PersonVO getPersonRelationByName(String name);
 
     /**
      * @param id
@@ -112,7 +115,24 @@ public interface IPersonNodeService {
     Long getPersonNodeCount(String type);
 
 
+    /**
+     * 根据名称（模糊） 分页查询
+     * @param name
+     * @param pageIndex
+     * @param pageSize
+     * @param type
+     * @return
+     */
     PageResult<PersonVO> getListPersonNodeByPageAndName(String name, int pageIndex, int pageSize,String type);
 
+    /**
+     *
+     * @param type
+     * @return
+     */
+    List<PersonVO> getPersonNodeByType(String type);
+
+
+    List <PersonNodeRelationsListVO> getPersonNodeLikeByName(String name, String type);
 
 }

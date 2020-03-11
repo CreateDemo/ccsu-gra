@@ -26,8 +26,8 @@ public class BaseNodeCotroller {
     IBaseNodeService baseNodeService;
 
     @GetMapping("/findBaseNodeName")
-    public Result<List<Map<String, String>>> findBaseNodeName(String type) {
-        List<Map<String, String>> node = baseNodeService.findBaseNodeName(type);
+    public Result<List<Map<String, String>>> findBaseNodeName(String nodeType ,String type) {
+        List<Map<String, String>> node = baseNodeService.findBaseNodeName(nodeType,type);
         if (node != null) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {

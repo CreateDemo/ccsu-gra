@@ -41,4 +41,10 @@ public interface PersonNodeRepository extends Neo4jRepository<PersonNode, Long> 
 
     @Query("MATCH (n:PersonNode) where n.type={type} and n.name Contains {name}  RETURN count(n)")
     Long getPersonNodeCountByName(@Param("type")String type,@Param("name") String name);
+
+    @Query("MATCH p=(n:PersonNode)  where n.name Contains {name} and n.type={type} RETURN n ")
+    List<PersonNode> getPersonNodeLikeByName(@Param("name") String name,
+                                             @Param("type") String type);
+
+
 }

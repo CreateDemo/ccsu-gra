@@ -26,6 +26,10 @@ $(function() {
             height: '0'
         }, 500);
     })
+
+
+
+
     $('#men_sol').on('mouseenter', function() {
         $('#menu_hover_bg').stop().animate({
             height: '340px'
@@ -42,6 +46,47 @@ $(function() {
             height: '0'
         }, 500);
     })
+
+
+
+
+    $('#men_sol1').on('mouseenter', function() {
+        $('#menu_hover_bg').stop().animate({
+            height: '340px'
+        }, 500);
+        $('#men_sol1 .sub_menu').stop().animate({
+            height: '340px'
+        }, 600);
+    })
+    $('#men_sol1').on('mouseleave', function() {
+        $('#menu_hover_bg').stop().animate({
+            height: '0'
+        }, 600);
+        $('#men_sol1 .sub_menu').stop().animate({
+            height: '0'
+        }, 500);
+    })
+
+    $('#men_sol2').on('mouseenter', function() {
+        $('#menu_hover_bg').stop().animate({
+            height: '340px'
+        }, 500);
+        $('#men_sol2 .sub_menu').stop().animate({
+            height: '340px'
+        }, 600);
+    })
+    $('#men_sol2').on('mouseleave', function() {
+        $('#menu_hover_bg').stop().animate({
+            height: '0'
+        }, 600);
+        $('#men_sol2 .sub_menu').stop().animate({
+            height: '0'
+        }, 500);
+    })
+
+
+
+
     $('#men_fuwu').on('mouseenter', function() {
         $('#menu_hover_bg').stop().animate({
             height: '340px'

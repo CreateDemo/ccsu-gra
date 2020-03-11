@@ -3,6 +3,7 @@ package com.ccsu.feng.test.service.node;
 import com.ccsu.feng.test.domain.base.BaseNode;
 import com.ccsu.feng.test.domain.base.BaseRelationship;
 import com.ccsu.feng.test.domain.vo.ListRelationVO;
+import com.ccsu.feng.test.domain.vo.PersonNodeRelationsListVO;
 import com.ccsu.feng.test.utils.PageResult;
 
 import java.util.List;
@@ -83,4 +84,19 @@ public interface IBaseRelationshipService {
      * @return
      */
     PageResult<ListRelationVO> getListRelationByPage(int pageIndex, int pageSize,String type);
+
+    /**
+     *
+     * @param type
+     * @return
+     */
+    List<PersonNodeRelationsListVO> getPersonNodRelationByType(String type);
+
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    List<PersonNodeRelationsListVO>  getPersonNodRelationByName(String name);
 }

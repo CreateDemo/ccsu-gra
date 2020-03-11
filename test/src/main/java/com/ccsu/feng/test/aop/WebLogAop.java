@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +37,6 @@ public class WebLogAop {
 
     @Pointcut("(execution (* com.ccsu.feng.test.controller.*.*(..)))")
     public void webLog(){
-
     }
 
     /**
@@ -56,7 +56,8 @@ public class WebLogAop {
         Object[] args = joinPoint.getArgs();
         for(int k=0; k<args.length; k++){
             if (args[k] instanceof BindingResult || args[k] instanceof HttpServletResponse
-            || args[k] instanceof HttpServletRequest || args[k] instanceof MultipartFile){
+            || args[k] instanceof HttpServletRequest || args[k] instanceof MultipartFile
+                    || args[k] instanceof RedirectAttributes){
                 continue;
             }
             log.info(" 参数名：" + paramNames[k]+",参数值：" + JSON.toJSONString(args[k]));

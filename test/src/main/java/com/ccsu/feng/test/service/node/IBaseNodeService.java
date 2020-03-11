@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface IBaseNodeService {
 
-    List<Map<String,String>>  findBaseNodeName(String type);
+    List<Map<String,String>>  findBaseNodeName(String nodeType,String type);
 
     /**
      * @param name

@@ -37,4 +37,7 @@ public interface BaseRelationshipRepository extends Neo4jRepository<BaseRelation
     @Query("MATCH  (n:BaseNode)-[r:Ref]->(m:BaseNode) where n.type={type} and m.type={type} RETURN count(r)")
     Long getBaseRelationshipCount(@Param("type") String type);
 
+    @Query("MATCH p=(n:PersonNode)-[r:Ref]->(m:PersonNode) where n.type={type} and m.type={type} RETURN r")
+    List<BaseRelationship> getPersonNodRelationByType(@Param("type") String type);
+
 }

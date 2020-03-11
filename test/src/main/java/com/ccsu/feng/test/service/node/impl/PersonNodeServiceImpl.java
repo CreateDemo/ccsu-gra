@@ -3,6 +3,7 @@ package com.ccsu.feng.test.service.node.impl;
 import com.ccsu.feng.test.domain.base.BaseRelationship;
 import com.ccsu.feng.test.domain.node.PersonNode;
 import com.ccsu.feng.test.domain.node.WeaponNode;
+import com.ccsu.feng.test.domain.vo.PersonNodeRelationsListVO;
 import com.ccsu.feng.test.domain.vo.PersonVO;
 import com.ccsu.feng.test.enums.RelationsType;
 import com.ccsu.feng.test.repository.PersonNodeRepository;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -84,6 +86,16 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
         PersonNode personNode = personNodeRepository.getPersonNodeByName(name);
 
         return personNode;
+    }
+
+    @Override
+    public PersonVO getPersonRelationByName(String name) {
+        PersonNode personNode = personNodeRepository.getPersonNodeByName(name);
+        if (personNode==null){
+            return null;
+        }
+        PersonVO personVO =new PersonVO(personNode);
+        return personVO;
     }
 
 
@@ -240,6 +252,56 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
         }
         log.info("pageIndex->{},pageSize->{}", pageIndex, pageSize);
         return new PageResult<>(pageIndex, pageSize, personNodeRepository.getPersonNodeCountByName(type, name), list);
+    }
+
+    @Override
+    public List<PersonVO> getPersonNodeByType(String type) {
+        List<PersonNode> listPersonNodeByType = personNodeRepository.getListPersonNodeByType(type);
+        if (listPersonNodeByType.size()==0){
+            return null;
+        }
+        List<PersonVO> list = new ArrayList<>();
+        for (PersonNode personNode : listPersonNodeByType) {
+            list.add(new PersonVO(personNode));
+        }
+        return list;
+    }
+
+    @Override
+    public List<PersonNodeRelationsListVO> getPersonNodeLikeByName(String name, String type) {
+        List<PersonNode> personNodeLikeByName = personNodeRepository.getPersonNodeLikeByName(name, type);
+        if (personNodeLikeByName.size()==0){
+            return  null;
+        }
+        List<PersonNode> personNodeList =getLiikeVO(personNodeLikeByName);
+        List<PersonNodeRelationsListVO> listVOS = new ArrayList<>(personNodeList.size());
+        for (PersonNode personNode : personNodeList) {
+            if (personNode.getRelationships() == null) {
+                PersonNodeRelationsListVO personNodeRelationsListVO = new PersonNodeRelationsListVO();
+                personNodeRelationsListVO.setSource(personNode.getName());
+                personNodeRelationsListVO.setTarget(personNode.getName());
+                listVOS.add(personNodeRelationsListVO);
+                continue;
+            }
+            Set<BaseRelationship> relationships = personNode.getRelationships();
+            for (BaseRelationship baseRelationship : relationships) {
+                PersonNodeRelationsListVO personNodeRelations = new PersonNodeRelationsListVO();
+                personNodeRelations.setRelationName(baseRelationship.getName());
+                personNodeRelations.setSource(personNode.getName());
+                personNodeRelations.setTarget(baseRelationship.getEnd().getName());
+                listVOS.add(personNodeRelations);
+            }
+        }
+        return listVOS;
+    }
+
+    private List<PersonNode> getLiikeVO( List<PersonNode> list){
+        List<PersonNode> nodeList =new ArrayList<>(list.size());
+        for (PersonNode node : list) {
+            PersonNode personNodeByName = personNodeRepository.getPersonNodeByName(node.getName());
+            nodeList.add(personNodeByName);
+        }
+        return nodeList;
     }
 
 

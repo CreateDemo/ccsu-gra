@@ -26,7 +26,7 @@ public class BaseNodeServiceImpl implements IBaseNodeService {
 
 
     @Override
-    public List<Map<String, String>> findBaseNodeName(String type) {
+    public List<Map<String, String>> findBaseNodeName(String nodeType,String type) {
         List<Map<String, String>> list = new ArrayList<>();
         List<BaseNode> baseNodeName = baseNodeRepository.getBaseNodeName(type);
         for (BaseNode baseNode : baseNodeName) {
