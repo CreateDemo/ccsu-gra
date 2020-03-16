@@ -3,24 +3,25 @@ package com.ccsu.feng.test.service.node.impl;
 import com.ccsu.feng.test.domain.base.BaseRelationship;
 import com.ccsu.feng.test.domain.node.PersonNode;
 import com.ccsu.feng.test.domain.node.WeaponNode;
-import com.ccsu.feng.test.domain.vo.PersonNodeRelationsListVO;
+import com.ccsu.feng.test.domain.vo.NodeRelationsListVO;
 import com.ccsu.feng.test.domain.vo.PersonVO;
+import com.ccsu.feng.test.enums.LoginTime;
 import com.ccsu.feng.test.enums.RelationsType;
 import com.ccsu.feng.test.repository.PersonNodeRepository;
 import com.ccsu.feng.test.repository.WeaponNodeRepository;
 import com.ccsu.feng.test.service.node.IBaseRelationshipService;
 import com.ccsu.feng.test.service.node.IPersonNodeService;
 import com.ccsu.feng.test.utils.PageResult;
+import com.ccsu.feng.test.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.ListUtils;
 
-import javax.swing.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author admin
@@ -38,6 +39,9 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
 
     @Autowired
     IBaseRelationshipService relationshipService;
+
+    @Autowired
+    RedisUtil redisUtil;
 
 
     @Override
@@ -62,7 +66,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
 
 
     @Override
-    public PersonNode addPersonNodeByName(String name,String type) {
+    public PersonNode addPersonNodeByName(String name, String type) {
         log.info("需要添加的人物名称为 ->{}", name);
         if (StringUtils.isEmpty(name)) {
             return null;
@@ -91,10 +95,10 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
     @Override
     public PersonVO getPersonRelationByName(String name) {
         PersonNode personNode = personNodeRepository.getPersonNodeByName(name);
-        if (personNode==null){
+        if (personNode == null) {
             return null;
         }
-        PersonVO personVO =new PersonVO(personNode);
+        PersonVO personVO = new PersonVO(personNode);
         return personVO;
     }
 
@@ -110,7 +114,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
 
 
     @Override
-    public BaseRelationship addPersonNodeRelationship(String name, String startName, String endName,String type) {
+    public BaseRelationship addPersonNodeRelationship(String name, String startName, String endName, String type) {
         //获取人物节点
         PersonNode startPerson = getPersonNodeByName(startName);
         PersonNode endPerson = getPersonNodeByName(endName);
@@ -130,12 +134,12 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
                 return relationship;
             }
         } else if (startPerson != null && endPerson == null) { //2.开始人物节点存在，结束人物节点不存在
-            endPerson = addPersonNodeByName(endName,type);
+            endPerson = addPersonNodeByName(endName, type);
         } else if (startPerson == null && endPerson != null) { //3.开始人物节点不存在，结束人物节点存在
-            startPerson = addPersonNodeByName(startName,type);
+            startPerson = addPersonNodeByName(startName, type);
         } else if (startPerson == null && endPerson == null) { //4.人物节点均不存在
-            startPerson = addPersonNodeByName(startName,type);
-            endPerson = addPersonNodeByName(endName,type);
+            startPerson = addPersonNodeByName(startName, type);
+            endPerson = addPersonNodeByName(endName, type);
         }
         BaseRelationship relationship = relationshipService.addRelationship(name, startPerson, endPerson);
         //更新开始节点关系
@@ -151,12 +155,12 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
 
 
     @Override
-    public List<BaseRelationship> addTwoPersonNodeRelationship(String preName, String sufName, String startName, String endName,String type) {
+    public List<BaseRelationship> addTwoPersonNodeRelationship(String preName, String sufName, String startName, String endName, String type) {
         List<BaseRelationship> list = new ArrayList<>();
         //顺向关系
-        BaseRelationship baseRelationship = addPersonNodeRelationship(preName, startName, endName,type);
+        BaseRelationship baseRelationship = addPersonNodeRelationship(preName, startName, endName, type);
         //逆向关系
-        BaseRelationship baseRelationship1 = addPersonNodeRelationship(sufName, endName, startName,type);
+        BaseRelationship baseRelationship1 = addPersonNodeRelationship(sufName, endName, startName, type);
         list.add(baseRelationship);
         list.add(baseRelationship1);
         return list;
@@ -170,7 +174,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
 
 
     @Override
-    public List<BaseRelationship> addPersonNodeWeapon(String startName, String endName,String type) {
+    public List<BaseRelationship> addPersonNodeWeapon(String startName, String endName, String type) {
         List<BaseRelationship> list = new ArrayList<>();
         PersonNode startNode = getPersonNodeByName(startName);
         WeaponNode endNode = weaponNodeRepository.getWeaponByName(endName);
@@ -188,7 +192,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
             BaseRelationship relationship = relationshipService.findRelationshipByStarNameAndEndName(RelationsType.PERSON_TO_WEAPON.getRelation(), startName, endName);
             if (relationship != null) {
                 list.add(relationship);
-                list.add(addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName,type));
+                list.add(addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName, type));
                 return list;
             }
         } else if (startNode != null && endNode == null) { //2.开始节点存在，结束人物节点不存在
@@ -196,9 +200,9 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
             weapon.setName(endName);
             endNode = weaponNodeRepository.save(weapon);
         } else if (startNode == null && endNode != null) { //3.开始人物节点不存在，结束人物节点存在
-            startNode = addPersonNodeByName(startName,type);
+            startNode = addPersonNodeByName(startName, type);
         } else if (startNode == null && endNode == null) { //4.人物节点均不存在
-            startNode = addPersonNodeByName(startName,type);
+            startNode = addPersonNodeByName(startName, type);
             WeaponNode weapon = new WeaponNode();
             weapon.setName(endName);
             endNode = weaponNodeRepository.save(weapon);
@@ -214,7 +218,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
         startNode.setRelationships(relationships);
         personNodeRepository.save(startNode);
         list.add(relationship);
-        list.add(addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName,type));
+        list.add(addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName, type));
         return list;
     }
 
@@ -255,48 +259,52 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
     }
 
     @Override
-    public List<PersonVO> getPersonNodeByType(String type) {
+    public List<String> getPersonNodeByType(String type) {
+        List<String>  hget = (List<String>) redisUtil.hget("PersonNode:", type);
+        if (!ListUtils.isEmpty(hget)){
+            return  hget;
+        }
         List<PersonNode> listPersonNodeByType = personNodeRepository.getListPersonNodeByType(type);
-        if (listPersonNodeByType.size()==0){
+        if (ListUtils.isEmpty(listPersonNodeByType)) {
             return null;
         }
-        List<PersonVO> list = new ArrayList<>();
-        for (PersonNode personNode : listPersonNodeByType) {
-            list.add(new PersonVO(personNode));
-        }
-        return list;
+        List<String> strings = listPersonNodeByType.stream().map(x -> x.getName()).collect(Collectors.toList());
+        redisUtil.hset("PersonNode:",type,strings, LoginTime.SAVE_LOGIN_TIME.getTime());
+        return strings;
     }
 
     @Override
-    public List<PersonNodeRelationsListVO> getPersonNodeLikeByName(String name, String type) {
+    public List<NodeRelationsListVO> getPersonNodeLikeByName(String name, String type) {
         List<PersonNode> personNodeLikeByName = personNodeRepository.getPersonNodeLikeByName(name, type);
-        if (personNodeLikeByName.size()==0){
-            return  null;
+        if (ListUtils.isEmpty(personNodeLikeByName)) {
+            return null;
         }
-        List<PersonNode> personNodeList =getLiikeVO(personNodeLikeByName);
-        List<PersonNodeRelationsListVO> listVOS = new ArrayList<>(personNodeList.size());
+        List<PersonNode> personNodeList = getLikeVO(personNodeLikeByName);
+        List<NodeRelationsListVO> listVOS = new ArrayList<>();
         for (PersonNode personNode : personNodeList) {
             if (personNode.getRelationships() == null) {
-                PersonNodeRelationsListVO personNodeRelationsListVO = new PersonNodeRelationsListVO();
-                personNodeRelationsListVO.setSource(personNode.getName());
-                personNodeRelationsListVO.setTarget(personNode.getName());
-                listVOS.add(personNodeRelationsListVO);
+                NodeRelationsListVO nodeRelationsListVO = new NodeRelationsListVO();
+                nodeRelationsListVO.setSource(personNode.getName());
+                nodeRelationsListVO.setTarget(personNode.getName());
+                listVOS.add(nodeRelationsListVO);
                 continue;
             }
             Set<BaseRelationship> relationships = personNode.getRelationships();
             for (BaseRelationship baseRelationship : relationships) {
-                PersonNodeRelationsListVO personNodeRelations = new PersonNodeRelationsListVO();
-                personNodeRelations.setRelationName(baseRelationship.getName());
-                personNodeRelations.setSource(personNode.getName());
-                personNodeRelations.setTarget(baseRelationship.getEnd().getName());
-                listVOS.add(personNodeRelations);
+                if (baseRelationship.getEnd() instanceof PersonNode) {
+                    NodeRelationsListVO personNodeRelations = new NodeRelationsListVO();
+                    personNodeRelations.setRelationName(baseRelationship.getName());
+                    personNodeRelations.setSource(personNode.getName());
+                    personNodeRelations.setTarget(baseRelationship.getEnd().getName());
+                    listVOS.add(personNodeRelations);
+                }
             }
         }
         return listVOS;
     }
 
-    private List<PersonNode> getLiikeVO( List<PersonNode> list){
-        List<PersonNode> nodeList =new ArrayList<>(list.size());
+    private List<PersonNode> getLikeVO(List<PersonNode> list) {
+        List<PersonNode> nodeList = new ArrayList<>(list.size());
         for (PersonNode node : list) {
             PersonNode personNodeByName = personNodeRepository.getPersonNodeByName(node.getName());
             nodeList.add(personNodeByName);
@@ -305,18 +313,18 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
     }
 
 
-    private BaseRelationship addWeaponPerson(String name, String startName, String endName,String type) {
+    private BaseRelationship addWeaponPerson(String name, String startName, String endName, String type) {
         WeaponNode startNode = weaponNodeRepository.getWeaponByName(startName);
         PersonNode endNode = getPersonNodeByName(endName);
 
         if (startNode != null && endNode != null) { // 1.节点全部存在
             BaseRelationship relationship = relationshipService.findRelationshipByStarNameAndEndName(name, startName, endName);
             if (relationship != null) {
-                addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName,type);
+                addWeaponPerson(RelationsType.WEAPON_REF.getRelation(), endName, startName, type);
                 return relationship;
             }
         } else if (startNode != null && endNode == null) { //2.开始节点存在，结束人物节点不存在
-            endNode = addPersonNodeByName(endName,type);
+            endNode = addPersonNodeByName(endName, type);
         } else if (startNode == null && endNode != null) { //3.开始人物节点不存在，结束人物节点存在
             WeaponNode weapon = new WeaponNode();
             weapon.setName(endName);
@@ -325,7 +333,7 @@ public class PersonNodeServiceImpl implements IPersonNodeService {
             WeaponNode weapon = new WeaponNode();
             weapon.setName(endName);
             startNode = weaponNodeRepository.save(weapon);
-            endNode = addPersonNodeByName(startName,type);
+            endNode = addPersonNodeByName(startName, type);
         }
 
         BaseRelationship relationship = relationshipService.addRelationship(name, startNode, endNode);

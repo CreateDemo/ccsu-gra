@@ -8,7 +8,7 @@ import lombok.Data;
  * @create 2020-03-08-17:50
  */
 @Data
-public class PersonNodeRelationsListVO {
+public class NodeRelationsListVO {
     private String source;
     private String target;
     private String relationName;

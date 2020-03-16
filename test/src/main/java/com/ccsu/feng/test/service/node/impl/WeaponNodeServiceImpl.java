@@ -1,10 +1,17 @@
 package com.ccsu.feng.test.service.node.impl;
 
+import com.ccsu.feng.test.domain.base.BaseRelationship;
+import com.ccsu.feng.test.domain.node.PersonNode;
 import com.ccsu.feng.test.domain.node.WeaponNode;
+import com.ccsu.feng.test.domain.vo.NodeRelationsListVO;
+import com.ccsu.feng.test.domain.vo.PersonVO;
 import com.ccsu.feng.test.domain.vo.WeaponVO;
+import com.ccsu.feng.test.enums.LoginTime;
+import com.ccsu.feng.test.repository.PersonNodeRepository;
 import com.ccsu.feng.test.repository.WeaponNodeRepository;
 import com.ccsu.feng.test.service.node.IWeaponNodeService;
 import com.ccsu.feng.test.utils.PageResult;
+import com.ccsu.feng.test.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +19,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author admin
@@ -27,6 +37,11 @@ public class WeaponNodeServiceImpl implements IWeaponNodeService {
 
     @Autowired
     WeaponNodeRepository weaponRepository;
+
+    @Autowired
+    PersonNodeRepository personNodeRepository;
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public WeaponVO addWeapon(WeaponNode weapon) {
@@ -124,5 +139,63 @@ public class WeaponNodeServiceImpl implements IWeaponNodeService {
         }
         log.info("pageIndex->{},pageSize->{}", pageIndex, pageSize);
         return new PageResult<>(pageIndex, pageSize, weaponRepository.getWeaponNodeCountByName(type, name), list);
+    }
+
+    @Override
+    public List<String> getWeaponNodeByType(String type) {
+
+        List<String> string = (List<String>)redisUtil.hget("WeaponNode",type);
+        if (!ListUtils.isEmpty(string)){
+            return string;
+        }
+        List<WeaponNode> listWeaponNodeByType = weaponRepository.getListWeaponNodeByType(type);
+        if (ListUtils.isEmpty(listWeaponNodeByType)) {
+            return null;
+        }
+
+        List<String> strings = listWeaponNodeByType.stream().map(x -> x.getName()).collect(Collectors.toList());
+        redisUtil.hset("WeaponNode:",type,strings, LoginTime.SAVE_LOGIN_TIME.getTime());
+
+        return strings;
+    }
+
+
+    @Override
+    public List<NodeRelationsListVO> getWeaponNodeLikeByName(String name, String type) {
+        List<PersonNode> personNodeLikeByName = personNodeRepository.getPersonNodeLikeByName(name, type);
+        if (personNodeLikeByName.size() == 0) {
+            return null;
+        }
+        List<PersonNode> personNodeList = getLikeVO(personNodeLikeByName);
+        List<NodeRelationsListVO> listVOS = new ArrayList<>();
+        for (PersonNode personNode : personNodeList) {
+            if (personNode.getRelationships() == null) {
+                NodeRelationsListVO nodeRelationsListVO = new NodeRelationsListVO();
+                nodeRelationsListVO.setSource(personNode.getName());
+                nodeRelationsListVO.setTarget(personNode.getName());
+                listVOS.add(nodeRelationsListVO);
+                continue;
+            }
+            Set<BaseRelationship> relationships = personNode.getRelationships();
+            for (BaseRelationship baseRelationship : relationships) {
+                if (baseRelationship.getEnd() instanceof WeaponNode) {
+                    NodeRelationsListVO personNodeRelations = new NodeRelationsListVO();
+                    personNodeRelations.setRelationName(baseRelationship.getName());
+                    personNodeRelations.setSource(personNode.getName());
+                    personNodeRelations.setTarget(baseRelationship.getEnd().getName());
+                    listVOS.add(personNodeRelations);
+                }
+            }
+        }
+        return listVOS;
+    }
+
+    private List<PersonNode> getLikeVO(List<PersonNode> list) {
+        List<PersonNode> nodeList = new ArrayList<>(list.size());
+        for (PersonNode node : list) {
+            PersonNode personNodeByName = personNodeRepository.getPersonNodeByName(node.getName());
+            nodeList.add(personNodeByName);
+        }
+        return nodeList;
     }
 }

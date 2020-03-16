@@ -119,23 +119,6 @@
     .link.resolved {
         stroke-dasharray: 0, 21;
     }
-    .el-icon-star-off:before {
-        top: 20px;
-        position: absolute;
-        font-size: 40px;
-        content: "\e717";
-        margin-left: -10px;
-        cursor: pointer;
-    }
-
-    .el-icon-star-on:before {
-        top: 20px;
-        position: absolute;
-        font-size: 40px;
-        content: "\e797";
-        margin-left: -10px;
-        cursor: pointer;
-    }
 
     circle {
         fill: #ccc;
@@ -164,6 +147,23 @@
         border-width: 1px;
         background-color: white;
         border-radius: 5px;
+    }
+    .el-icon-star-off:before {
+        top: 20px;
+        position: absolute;
+        font-size: 40px;
+        content: "\e717";
+        margin-left: -10px;
+        cursor: pointer;
+    }
+
+    .el-icon-star-on:before {
+        top: 20px;
+        position: absolute;
+        font-size: 40px;
+        content: "\e797";
+        margin-left: -10px;
+        cursor: pointer;
     }
 </style>
 <body>
@@ -596,9 +596,9 @@
 
                     <li @keyup.enter="selectInputName()">
                         <el-input style="top: 20px; margin-left: 10px"
-                                placeholder="请输入人物名称"
-                                v-model="input"
-                                clearable>
+                                  placeholder="请输入人物名称"
+                                  v-model="input"
+                                  clearable>
                         </el-input>
                     </li>
 
@@ -647,6 +647,11 @@
                         </div>
                     </el-dialog>
 
+
+
+
+
+
                     <span style="position: absolute;left: 1055px;top: 25px;height: 30px;
         cursor: pointer;width: 200px">  <el-dropdown trigger="click" @command="handleCommand">
   <span style="  line-height: 30px;
@@ -663,11 +668,13 @@
       <el-dropdown-item command="loginOut">退出</el-dropdown-item>
   </el-dropdown-menu>
 </el-dropdown></span>
+
+
                     <i  v-if="collectFlag" title="添加收藏"  @click="collect()" class="el-icon-star-off"></i>
 
                     <i  v-if="!collectFlag" title="取消收藏" @click="cancelCollect()" class="el-icon-star-on"></i>
-                </div>
 
+                </div>
             </div>
 
         </div>
@@ -683,20 +690,20 @@
                 <li class="s-firstItem first">
                     <a href="#">
                         <i class="fa fa-home"></i>
-                        <span>{{type}}人物关系</span>
+                        <span>{{type}} 武器查看</span>
                     </a>
                 </li>
                 <li class="first">
                     <div class="d-firstNav s-firstNav clearfix">
                         <i class="fa fa-bars"></i>
-                        <span>人物浏览</span>
+                        <span>武器浏览</span>
                         <i class="fa fa-caret-right fr "></i>
                     </div>
                     <ul class="d-firstDrop s-firstDrop">
                         <li style="overflow: scroll;height: 450px;
 ">
                             <div v-for="(item,i) in personList">
-                                <div class="s-secondNav swiper-slide" @click="getPersonNodeByName(item)">
+                                <div class="s-secondNav swiper-slide" @click="getWeaponNodeRelationByName(item)">
                                     <span >{{item}}</span>
                                 </div>
 
@@ -746,6 +753,49 @@
             <el-button type="primary" @click="dialogFormVisibleShowPerson=false">退出</el-button>
         </div>
     </el-dialog>
+
+
+    <!--         修改-->
+    <el-dialog :title="personName" :visible.sync="dialogFormVisibleShowWeapon">
+        <el-form :model="showPersonDtail">
+            <el-form-item label="名字" :label-width="formLabelWidth">
+                <template slot-scope="scope">
+                    <el-image
+                            style="width: 130px; height: 130px"
+                            :src="showPersonDtail.picture"
+                            :preview-src-list="showPersonDtail.pictures">
+                        >
+                    </el-image>
+                </template>
+            </el-form-item>
+
+            <el-form-item label="名字" :label-width="formLabelWidth">
+                <el-input   :disabled="flag" v-model="showPersonDtail.name" autocomplete="off" style="color: black"></el-input>
+            </el-form-item>
+
+
+            <el-form-item label="武器特点" :label-width="formLabelWidth">
+                <el-input  style="color: black" :disabled="flag" v-model="showPersonDtail.character" autocomplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item label="武器简介" :label-width="formLabelWidth">
+                <el-input style="color: black" :disabled="flag" v-model="showPersonDtail.content"  type="textarea" autocomplete="off"></el-input>
+            </el-form-item>
+
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="dialogFormVisibleShowWeapon=false">退出</el-button>
+        </div>
+    </el-dialog>
+
+
+
+
+
+
+
+
 
 </div>
 <a type="button" id="fullscreen" class="btn btn-default visible-lg visible-md" style="
@@ -805,6 +855,7 @@
             linksNode:[],
             personName:'',
             dialogFormVisibleShowPerson:false,
+            dialogFormVisibleShowWeapon:false,
             formLabelWidth:'120px',
             showPersonDtail:'',
             flag:true,
@@ -821,11 +872,12 @@
             this.getParam();
             this.getListNodeLink();
             this.getListNode();
-            this.getPersonList();
             this.getPageUser();
+            this.getWeaponList();
             this.selectCollect();
         },
         methods: {
+
             getListNode() {
                 var chaxuntext = $(".chaxuntext").text;
                 // http://blog.thomsonreuters.com/index.php/mobile-patent-suits-graphic-of-the-day/
@@ -996,7 +1048,7 @@
                         _this.showPerson(d.name);
                     })
                     .on("mouseover", function (d) {
-                        tooltip.html("双击查看人物详情")
+                        tooltip.html("双击查看详情")
                             .style("left", (d3.event.pageX) + "px")
                             .style("top", (d3.event.pageY + 20) + "px")
                             .style("opacity", 1.0);
@@ -1147,8 +1199,8 @@
                 $.ajax({
                     type: "get",
                     url: url,
-                    // data: ,
                     async:false,
+                    // data: ,
                     success: function (res) {
                         if (res.code === "200") {
                             console.log(_this.userInfo)
@@ -1329,14 +1381,16 @@
                     this.paramName= decodeURIComponent(strs[1].replace("paramName=", ""));
                     this.paramLikeName=  decodeURIComponent(strs[2].replace("paramLikeName=", ""));
                     console.log(this.type);
+
                 }
             },
-            getPersonList() {
+            getWeaponList() {
                 let _this = this;
                 let postData = {
                     type: _this.type,
                 }
-                var url = "/page/personNode/getPersonNodeByType";
+                console.log(postData);
+                var url = "/page/weapon/getWeaponNodeByType";
                 $.ajax({
                     type: "get",
                     url: url,
@@ -1346,7 +1400,6 @@
                         if (res.code === '200') {
                             _this.personList = res.data;
                         }
-
                     },
                     error: function () {
                         _this.$message.error('服务器错误');
@@ -1354,90 +1407,36 @@
                 });
 
             },
+
+
             getListNodeLink() {
-                if (this.paramName === ''&&this.paramLikeName===''){
-                    let _this = this;
-                    let postData = {
-                        type: _this.type,
-                    }
-                    var url = "/page/personNode/getPersonNodRelationByType";
-                    $.ajax({
-                        type: 'GET',
-                        url: url,
-                        data: postData,
-                        async: false,
-                        success: function (res) {
-                            console.log(res);
-                            if (res.code === '200') {
-                                _this.linksNode = res.data;
-                                return;
-                            }
-                        },
-                        error: function () {
-                        }
-                    });
+                let _this = this;
+                let postData = {
+                    type: _this.type,
                 }
-
-                if(this.paramName !== ''){
-                    let _this = this;
-                    let postData = {
-                        name: this.paramName,
-                    }
-                    console.log(postData);
-                    var url = "/page/personNode/getPersonNodRelationByName";
-                    $.ajax({
-                        type: "get",
-                        url: url,
-                        data: postData,
-                        async: false,
-                        success: function (res) {
-                            console.log(res);
-                            if (res.code === '200') {
-                                _this.linksNode=res.data;
-                                return;
-                            }
-                        },
-                        error: function () {
-                            _this.$message.error('服务器错误');
+                var url = "/page/weapon/getWeaponNodRelationByType";
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: postData,
+                    async: false,
+                    success: function (res) {
+                        console.log(res);
+                        if (res.code === '200') {
+                            _this.linksNode = res.data;
                         }
-                    });
-                }
-                if (this.paramLikeName!==''){
-                    let _this = this;
-                    let postData = {
-                        name: _this.paramLikeName,
-                        relationType:_this.type,
+                    },
+                    error: function () {
                     }
-                    var url = "/page/personNode/getPersonNodeLikeByName";
-                    $.ajax({
-                        type: "get",
-                        url: url,
-                        data: postData,
-                        async:false,
-                        success: function (res) {
-                            console.log(res);
-                            if (res.code === '200') {
-                                _this.linksNode=res.data;
-                                return;
-                            }
-
-                        },
-                        error: function () {
-                            _this.$message.error('服务器错误');
-                        }
-                    });
-                }
+                });
             },
-
-
-
-            getPersonNodeByName(name){
+            getWeaponNodeRelationByName(name){
                 let _this = this;
                 let postData = {
                     name: name,
                 }
                 console.log(postData);
-                var url = "/page/personNode/getPersonNodRelationByName";
+                var url = "/page/weapon/getWeaponNodRelationByName";
                 $.ajax({
                     type: "get",
                     url: url,
@@ -1446,11 +1445,10 @@
                         console.log(res);
                         if (res.code === '200') {
                             _this.paramName=name;
-                            console.log(" _this.paramName"+ _this.paramName);
                             _this.paramLikeName='';
                             _this.linksNode=res.data;
                             let svg = document.getElementById("svg");
-                            if (svg != null || svg !=undefined){
+                            if (svg != null || svg !==undefined){
                                 document.body.removeChild(svg);
                             }
                             _this.getListNode();
@@ -1462,12 +1460,12 @@
                         _this.$message.error('服务器错误');
                     }
                 });
+
+
             },
 
             showPerson(name){
                 this.personName=name;
-                this.dialogFormVisibleShowPerson=true;
-                this.collect();
                 let _this = this;
                 let postData = {
                     name: name,
@@ -1481,7 +1479,14 @@
                     success: function (res) {
                         console.log(res);
                         if (res.code === '200') {
-                           _this.showPersonDtail=res.data;
+                            if (res.data.alias===null || res.data.alias ==='' || res.data.alias ===undefined){
+                                _this.dialogFormVisibleShowWeapon=true;
+
+                            }else{
+                                _this.dialogFormVisibleShowPerson=true;
+                            }
+
+                            _this.showPersonDtail=res.data;
                         }
                     },
                     error: function () {
@@ -1504,13 +1509,12 @@
             },
 
             selectInputName(){
-
                 let _this = this;
                 let postData = {
                     name: _this.input,
                     relationType:_this.type,
                 }
-                var url = "/page/personNode/getPersonNodeLikeByName";
+                var url = "/page/weapon/getWeaponNodeLikeByName";
                 $.ajax({
                     type: "get",
                     url: url,
@@ -1526,8 +1530,6 @@
                             _this.$message.error(res.msg);
                             return;
                         }
-                        _this.paramName='';
-                        _this.paramLikeName= _this.input;
                         _this.linksNode=res.data;
                         let svg = document.getElementById("svg");
                         if (svg != null || svg !=undefined){
@@ -1538,6 +1540,8 @@
                             message: '查询成功！',
                             type: 'success'
                         });
+                        _this.paramName='';
+                        _this.paramLikeName= _this.input;
                         _this.collectUrl();
                         _this.selectCollect();
                     },
@@ -1553,7 +1557,6 @@
                     })
                     .catch(_ => {});
             },
-
             collectUrl(){
                 var url =this.linkUrl;
                 if (url.indexOf("?") !== -1) {
@@ -1567,7 +1570,7 @@
                 }
             },
             collect(){
-                var title = this.type+"-人物浏览";
+                var title = this.type+"-武器浏览";
                 if(this.paramName!==''){
                     title+=': '+this.paramName;
                 }
@@ -1589,7 +1592,7 @@
                     contentType : "application/json",
                     success: function(res){
                         if(res.code==="200"){
-                           _this.collectFlag = false;
+                            _this.collectFlag = false;
                             _this.$message({
                                 message: '添加收藏成功！',
                                 type: 'success'
@@ -1668,8 +1671,7 @@
                 });
 
             },
-        },
-
+        }
     })
 
 </script>

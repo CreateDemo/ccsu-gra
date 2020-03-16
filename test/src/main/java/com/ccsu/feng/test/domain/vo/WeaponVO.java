@@ -29,4 +29,7 @@ public class WeaponVO{
         this.setContent(weaponNode.getContent());
         this.pictures.add(weaponNode.getPicture());
     }
+    public WeaponVO(){
+
+    }
 }

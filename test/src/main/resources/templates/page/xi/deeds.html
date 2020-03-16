@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>人物关系</title>
+    <title>九九八十一难</title>
     <link rel="stylesheet" type="text/css" href="../../common/statics/css/navperson.css"/>
     <link rel="stylesheet" type="text/css" href="../../common/css/person.css"/>
     <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
@@ -102,23 +102,79 @@
         top: 16px;
     }
 
-    .link {
-        fill: none;
-        stroke: #666;
+    circle {
+        fill: #ccc;
+        stroke: #333;
         stroke-width: 1.5px;
     }
 
-    #licensing {
-        fill: green;
+    text {
+        font: 10px Microsoft YaHei;
+        pointer-events: none;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
     }
 
-    .link.licensing {
-        stroke: green;
+    #tip1{
+        height:35px;
+        background-color:#fff;
+        padding-left:10px;
+        padding-right:10px;
+        border:1px solid #969696;
+        position:absolute;
+        font-size:12px;
+        right:10px;
+        top:150px;
+        border-radius:3px;
+        line-height:35px;
     }
 
-    .link.resolved {
-        stroke-dasharray: 0, 21;
+    #tip1 input[type='button']{
+        height:22px;
+        line-height:22px;
+        outline:none;
+        text-align:center;
+        padding-left:5px;
+        padding-right:5px;
+        color:#FFF;
+        background-color:#0D9BF2;
+        border:0;
+        border-radius: 3px;
+        margin-top:8px;
+        margin-left:5px;
+        cursor:pointer;
+        margin-right:10px;
     }
+
+    .node {
+        cursor: pointer;
+    }
+
+    .node circle {
+        fill: #fff;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }
+
+    .node text {
+        font: 10px sans-serif;
+    }
+
+    .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 1.5px;
+    }
+    .tree{
+        width: 1000px;
+        height: 700px;
+        margin: 0 auto;
+        background: #E0E0E0;
+    }
+    .tree svg{
+        width: 100%;
+        height: 100%;
+    }
+
     .el-icon-star-off:before {
         top: 20px;
         position: absolute;
@@ -136,23 +192,6 @@
         margin-left: -10px;
         cursor: pointer;
     }
-
-    circle {
-        fill: #ccc;
-        stroke: #333;
-        stroke-width: 1.5px;
-    }
-
-    text {
-        font: 10px Microsoft YaHei;
-        pointer-events: none;
-        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
-    }
-
-    .linetext {
-        font-size: 12px;
-    }
-
     .tooltip {
         position: absolute;
         width: 120px;
@@ -594,17 +633,17 @@
                         </div>
                     </li>
 
-                    <li @keyup.enter="selectInputName()">
-                        <el-input style="top: 20px; margin-left: 10px"
-                                placeholder="请输入人物名称"
-                                v-model="input"
-                                clearable>
-                        </el-input>
-                    </li>
+                    <!--<li @keyup.enter="selectInputName()">-->
+                        <!--<el-input style="top: 20px; margin-left: 10px"-->
+                                  <!--placeholder="请输入人物名称"-->
+                                  <!--v-model="input"-->
+                                  <!--clearable>-->
+                        <!--</el-input>-->
+                    <!--</li>-->
 
-                    <li>
-                        <el-button style="position:absolute;top: 20px; margin-left: 20px" type="primary" @click="selectInputName()">查询</el-button>
-                    </li>
+                    <!--<li>-->
+                        <!--<el-button style="position:absolute;top: 20px; margin-left: 20px" type="primary" @click="selectInputName()">查询</el-button>-->
+                    <!--</li>-->
 
                 </ul>
             </div>
@@ -647,6 +686,9 @@
                         </div>
                     </el-dialog>
 
+
+
+
                     <span style="position: absolute;left: 1055px;top: 25px;height: 30px;
         cursor: pointer;width: 200px">  <el-dropdown trigger="click" @command="handleCommand">
   <span style="  line-height: 30px;
@@ -666,8 +708,8 @@
                     <i  v-if="collectFlag" title="添加收藏"  @click="collect()" class="el-icon-star-off"></i>
 
                     <i  v-if="!collectFlag" title="取消收藏" @click="cancelCollect()" class="el-icon-star-on"></i>
-                </div>
 
+                </div>
             </div>
 
         </div>
@@ -683,20 +725,20 @@
                 <li class="s-firstItem first">
                     <a href="#">
                         <i class="fa fa-home"></i>
-                        <span>{{type}}人物关系</span>
+                        <span>{{type}}事件浏览</span>
                     </a>
                 </li>
                 <li class="first">
                     <div class="d-firstNav s-firstNav clearfix">
                         <i class="fa fa-bars"></i>
-                        <span>人物浏览</span>
+                        <span>九九八十一难</span>
                         <i class="fa fa-caret-right fr "></i>
                     </div>
                     <ul class="d-firstDrop s-firstDrop">
                         <li style="overflow: scroll;height: 450px;
 ">
                             <div v-for="(item,i) in personList">
-                                <div class="s-secondNav swiper-slide" @click="getPersonNodeByName(item)">
+                                <div class="s-secondNav swiper-slide" @click="getDeedsNodeByName(item)">
                                     <span >{{item}}</span>
                                 </div>
 
@@ -747,6 +789,102 @@
         </div>
     </el-dialog>
 
+    <el-dialog :title="personName" :visible.sync="dialogFormVisibleShowPlace">
+        <el-form :model="showPersonDtail">
+            <el-form-item label="名字" :label-width="formLabelWidth">
+                <template slot-scope="scope">
+                    <el-image
+                            style="width: 130px; height: 130px"
+                            :src="showPersonDtail.picture"
+                            :preview-src-list="showPersonDtail.pictures">
+                        >
+                    </el-image>
+                </template>
+            </el-form-item>
+
+            <el-form-item label="地点名字" :label-width="formLabelWidth">
+                <el-input   :disabled="flag" v-model="showPersonDtail.name" autocomplete="off" style="color: black"></el-input>
+            </el-form-item>
+
+            <el-form-item label="地点简介" :label-width="formLabelWidth">
+                <el-input style="color: black" :disabled="flag" v-model="showPersonDtail.content"  type="textarea" autocomplete="off"></el-input>
+            </el-form-item>
+
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="dialogFormVisibleShowPlace=false">退出</el-button>
+        </div>
+    </el-dialog>
+
+
+
+    <el-dialog :title="personName" :visible.sync="dialogFormVisibleShowPerson">
+        <el-form :model="showPersonDtail">
+            <el-form-item label="名字" :label-width="formLabelWidth">
+                <template slot-scope="scope">
+                    <el-image
+                            style="width: 130px; height: 130px"
+                            :src="showPersonDtail.picture"
+                            :preview-src-list="showPersonDtail.pictures">
+                        >
+                    </el-image>
+                </template>
+            </el-form-item>
+
+            <el-form-item label="名字" :label-width="formLabelWidth">
+                <el-input   :disabled="flag" v-model="showPersonDtail.name" autocomplete="off" style="color: black"></el-input>
+            </el-form-item>
+
+            <el-form-item label="称号" :label-width="formLabelWidth">
+                <el-input  style="color: black" :disabled="flag" v-model="showPersonDtail.alias" autocomplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item label="人物性格特点" :label-width="formLabelWidth">
+                <el-input  style="color: black" :disabled="flag" v-model="showPersonDtail.character" autocomplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item label="人物简介" :label-width="formLabelWidth">
+                <el-input style="color: black" :disabled="flag" v-model="showPersonDtail.content"  type="textarea" autocomplete="off"></el-input>
+            </el-form-item>
+
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="dialogFormVisibleShowPerson=false">退出</el-button>
+        </div>
+    </el-dialog>
+
+
+    <el-dialog title="事件起因" :visible.sync="dialogFormVisibleShowOrigin">
+        <el-form :model="showPersonDtail">
+            <el-form-item label="起因" :label-width="formLabelWidth">
+                <el-input   :disabled="flag" v-model="showPersonDtail.origin" type="textarea" autocomplete="off" style="color: black"></el-input>
+            </el-form-item>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="dialogFormVisibleShowOrigin=false">退出</el-button>
+        </div>
+    </el-dialog>
+
+
+    <el-dialog title="事件结果" :visible.sync="dialogFormVisibleShowResult">
+        <el-form :model="showPersonDtail">
+            <el-form-item label="结果" :label-width="formLabelWidth">
+                <el-input   :disabled="flag" v-model="showPersonDtail.result"  type="textarea" autocomplete="off" style="color: black"></el-input>
+            </el-form-item>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="dialogFormVisibleShowResult=false">退出</el-button>
+        </div>
+    </el-dialog>
+
+    <div id="tip1" >
+        <input type="button" value="圆动图" @click="pmt()"/>
+        <input type="button" value="层次图" @click="bzt()"/>
+    </div>
 </div>
 <a type="button" id="fullscreen" class="btn btn-default visible-lg visible-md" style="
     position: absolute;
@@ -805,12 +943,17 @@
             linksNode:[],
             personName:'',
             dialogFormVisibleShowPerson:false,
+            dialogFormVisibleShowPlace:false,
+
+            dialogFormVisibleShowOrigin:false,
+            dialogFormVisibleShowResult:false,
             formLabelWidth:'120px',
             showPersonDtail:'',
             flag:true,
             input:'',
+            selectName:'金蝉遭贬第一难',
+            josn:'',
             paramName:'',
-            paramLikeName:'',
             linkUrl:'',
             collectFlag:true,
 
@@ -821,8 +964,8 @@
             this.getParam();
             this.getListNodeLink();
             this.getListNode();
-            this.getPersonList();
             this.getPageUser();
+            this.getPersonList();
             this.selectCollect();
         },
         methods: {
@@ -830,7 +973,7 @@
                 var chaxuntext = $(".chaxuntext").text;
                 // http://blog.thomsonreuters.com/index.php/mobile-patent-suits-graphic-of-the-day/
                 var links = this.linksNode;
-                console.log(links)
+                console.log("=="+links);
                 var nodes = {};
                 let _this=this;
                 links.forEach(function (link) {//参考https://stackoverflow.com/questions/23986466/d3-force-layout-linking-nodes-by-name-instead-of-index
@@ -996,7 +1139,7 @@
                         _this.showPerson(d.name);
                     })
                     .on("mouseover", function (d) {
-                        tooltip.html("双击查看人物详情")
+                        tooltip.html("双击查看详情")
                             .style("left", (d3.event.pageX) + "px")
                             .style("top", (d3.event.pageY + 20) + "px")
                             .style("opacity", 1.0);
@@ -1139,6 +1282,148 @@
                 //设置圆圈和文字的坐标
                 function transform1(d) {
                     return "translate(" + d.x + "," + d.y + ")";
+                }
+            },
+
+            getHerListNode(){
+                var json =this.json;
+                console.log(json);
+                console.log(document.getElementById("tree"));
+                var margin = [20, 120, 20, 120],
+                    width = document.getElementById("tree").offsetWidth,
+                    height = document.getElementById("tree").offsetHeight;
+
+                var i = 0,
+                    duration = 750,
+                    root;
+
+                var tree = d3.layout.tree()
+                    .size([height, width]);
+
+                var diagonal = d3.svg.diagonal()
+                    .projection(function(d) { return [d.y, d.x]; });
+
+                var zoom = d3.behavior.zoom().scaleExtent([0.1, 100]).on("zoom", zoomed);//添加放大缩小事件
+
+                var svg = d3.select("body").select("#tree").append("svg")
+                    .call(zoom)//给svg绑定zoom事件
+                    .append("g")
+                    .call(zoom)//给g绑定zoom事件
+                    .append("g")
+                    .attr("transform", "translate(" + margin[3] + "," + margin[0] + ")");
+
+
+                root = json;
+                root.x0 = height / 2;
+                root.y0 = 0;
+
+                function collapse(d) {
+                    if (d.children) {
+                        d._children = d.children;
+                        d._children.forEach(collapse);
+                        d.children = null;
+                    }
+                }
+
+                root.children.forEach(collapse);
+                update(root);
+
+                function zoomed() {
+                    svg.attr("transform",
+                        "translate(" + zoom.translate() + ")" +
+                        "scale(" + zoom.scale() + ")"
+                    );
+                }
+
+                function update(source) {
+
+                    // Compute the new tree layout.
+                    var nodes = tree.nodes(root).reverse(),
+                        links = tree.links(nodes);
+
+                    // Normalize for fixed-depth.
+                    nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+                    // Update the nodes…
+                    var node = svg.selectAll("g.node")
+                        .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+                    // Enter any new nodes at the parent's previous position.
+                    var nodeEnter = node.enter().append("g")
+                        .attr("class", "node")
+                        .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+                        .on("click", click);
+
+                    nodeEnter.append("circle")
+                        .attr("r", 1e-6)
+                        .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+                    nodeEnter.append("text")
+                        .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+                        .attr("dy", ".35em")
+                        .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+                        .text(function(d) { return d.name; })
+                        .style("fill-opacity", 1e-6);
+
+                    var nodeUpdate = node.transition()
+                        .duration(duration)
+                        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+                    nodeUpdate.select("circle")
+                        .attr("r", 4.5)
+                        .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+                    nodeUpdate.select("text")
+                        .style("fill-opacity", 1);
+
+                    var nodeExit = node.exit().transition()
+                        .duration(duration)
+                        .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+                        .remove();
+
+                    nodeExit.select("circle")
+                        .attr("r", 1e-6);
+
+                    nodeExit.select("text")
+                        .style("fill-opacity", 1e-6);
+
+                    var link = svg.selectAll("path.link")
+                        .data(links, function(d) { return d.target.id; });
+
+                    link.enter().insert("path", "g")
+                        .attr("class", "link")
+                        .attr("d", function(d) {
+                            var o = {x: source.x0, y: source.y0};
+                            return diagonal({source: o, target: o});
+                        });
+
+                    link.transition()
+                        .duration(duration)
+                        .attr("d", diagonal);
+
+                    link.exit().transition()
+                        .duration(duration)
+                        .attr("d", function(d) {
+                            var o = {x: source.x, y: source.y};
+                            return diagonal({source: o, target: o});
+                        })
+                        .remove();
+
+                    nodes.forEach(function(d) {
+                        d.x0 = d.x;
+                        d.y0 = d.y;
+                    });
+                }
+
+                function click(d) {
+                    if (d.children) {
+                        d._children = d.children;
+                        d.children = null;
+                    } else {
+                        d.children = d._children;
+                        d._children = null;
+                    }
+                    update(d);
                 }
             },
             getPageUser() {
@@ -1327,8 +1612,8 @@
                     let strs = str.split("&");
                     this.type = decodeURIComponent(strs[0].replace("type=", ""));
                     this.paramName= decodeURIComponent(strs[1].replace("paramName=", ""));
-                    this.paramLikeName=  decodeURIComponent(strs[2].replace("paramLikeName=", ""));
                     console.log(this.type);
+
                 }
             },
             getPersonList() {
@@ -1336,7 +1621,7 @@
                 let postData = {
                     type: _this.type,
                 }
-                var url = "/page/personNode/getPersonNodeByType";
+                var url = "/page/deeds/getDeedsNodeByType";
                 $.ajax({
                     type: "get",
                     url: url,
@@ -1355,89 +1640,43 @@
 
             },
             getListNodeLink() {
-                if (this.paramName === ''&&this.paramLikeName===''){
-                    let _this = this;
-                    let postData = {
-                        type: _this.type,
-                    }
-                    var url = "/page/personNode/getPersonNodRelationByType";
-                    $.ajax({
-                        type: 'GET',
-                        url: url,
-                        data: postData,
-                        async: false,
-                        success: function (res) {
-                            console.log(res);
-                            if (res.code === '200') {
-                                _this.linksNode = res.data;
-                                return;
-                            }
-                        },
-                        error: function () {
-                        }
-                    });
+                $("#fullscreen").show();
+                let svg = document.getElementById("tree");
+                if (svg != null || svg !=undefined){
+                    document.body.removeChild(svg);
                 }
 
-                if(this.paramName !== ''){
-                    let _this = this;
-                    let postData = {
-                        name: this.paramName,
-                    }
-                    console.log(postData);
-                    var url = "/page/personNode/getPersonNodRelationByName";
-                    $.ajax({
-                        type: "get",
-                        url: url,
-                        data: postData,
-                        async: false,
-                        success: function (res) {
-                            console.log(res);
-                            if (res.code === '200') {
-                                _this.linksNode=res.data;
-                                return;
-                            }
-                        },
-                        error: function () {
-                            _this.$message.error('服务器错误');
-                        }
-                    });
+                let _this = this;
+                let postData = {
+                    name: this.selectName,
                 }
-                if (this.paramLikeName!==''){
-                    let _this = this;
-                    let postData = {
-                        name: _this.paramLikeName,
-                        relationType:_this.type,
-                    }
-                    var url = "/page/personNode/getPersonNodeLikeByName";
-                    $.ajax({
-                        type: "get",
-                        url: url,
-                        data: postData,
-                        async:false,
-                        success: function (res) {
-                            console.log(res);
-                            if (res.code === '200') {
-                                _this.linksNode=res.data;
-                                return;
-                            }
-
-                        },
-                        error: function () {
-                            _this.$message.error('服务器错误');
+                var url = "/page/deeds/getDeedsNodRelationByName";
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: postData,
+                    async: false,
+                    success: function (res) {
+                        console.log(res);
+                        if (res.code === '200') {
+                            _this.linksNode = res.data;
                         }
-                    });
-                }
+                    },
+                    error: function () {
+                    }
+                });
             },
 
 
 
-            getPersonNodeByName(name){
+            getDeedsNodeByName(name){
                 let _this = this;
+                _this.selectName = name;
                 let postData = {
                     name: name,
                 }
                 console.log(postData);
-                var url = "/page/personNode/getPersonNodRelationByName";
+                var url = "/page/deeds/getDeedsNodRelationByName";
                 $.ajax({
                     type: "get",
                     url: url,
@@ -1445,15 +1684,14 @@
                     success: function (res) {
                         console.log(res);
                         if (res.code === '200') {
-                            _this.paramName=name;
-                            console.log(" _this.paramName"+ _this.paramName);
-                            _this.paramLikeName='';
                             _this.linksNode=res.data;
+                            console.log(_this.linksNode);
                             let svg = document.getElementById("svg");
                             if (svg != null || svg !=undefined){
                                 document.body.removeChild(svg);
                             }
                             _this.getListNode();
+                            _this.paramName=name;
                             _this.collectUrl();
                             _this.selectCollect();
                         }
@@ -1462,12 +1700,27 @@
                         _this.$message.error('服务器错误');
                     }
                 });
+
+
             },
 
             showPerson(name){
+                if (name.substr(0,2)==="起因"){
+                    this.dialogFormVisibleShowOrigin=true;
+                    this.showPersonDtail = {
+                        origin:name
+                    }
+                    return;
+                }
+                if (name.substr(0,2)==="结果"){
+                    this.dialogFormVisibleShowResult=true;
+                    this.showPersonDtail = {
+                        result:name
+                    }
+                    return;
+                }
+
                 this.personName=name;
-                this.dialogFormVisibleShowPerson=true;
-                this.collect();
                 let _this = this;
                 let postData = {
                     name: name,
@@ -1481,7 +1734,15 @@
                     success: function (res) {
                         console.log(res);
                         if (res.code === '200') {
-                           _this.showPersonDtail=res.data;
+                            if (res.data.alias!==undefined){
+                                _this.dialogFormVisibleShowPerson=true;
+                            }else if(res.data.origin!==undefined){
+
+                            }else {
+                                _this.dialogFormVisibleShowPlace=true;
+                            }
+
+                            _this.showPersonDtail=res.data;
                         }
                     },
                     error: function () {
@@ -1503,55 +1764,84 @@
                 },10)
             },
 
-            selectInputName(){
-
-                let _this = this;
-                let postData = {
-                    name: _this.input,
-                    relationType:_this.type,
-                }
-                var url = "/page/personNode/getPersonNodeLikeByName";
-                $.ajax({
-                    type: "get",
-                    url: url,
-                    data: postData,
-                    async:false,
-                    success: function (res) {
-                        console.log(res);
-                        if (res.code !== '200') {
-                            let svg = document.getElementById("svg");
-                            if (svg != null || svg !=undefined){
-                                document.body.removeChild(svg);
-                            }
-                            _this.$message.error(res.msg);
-                            return;
-                        }
-                        _this.paramName='';
-                        _this.paramLikeName= _this.input;
-                        _this.linksNode=res.data;
-                        let svg = document.getElementById("svg");
-                        if (svg != null || svg !=undefined){
-                            document.body.removeChild(svg);
-                        }
-                        _this.getListNode();
-                        _this.$message({
-                            message: '查询成功！',
-                            type: 'success'
-                        });
-                        _this.collectUrl();
-                        _this.selectCollect();
-                    },
-                    error: function () {
-                        _this.$message.error('服务器错误');
-                    }
-                });
-            },
             handleClose(done) {
                 this.$confirm('确认关闭？')
                     .then(_ => {
                         done();
                     })
                     .catch(_ => {});
+            },
+            //园动图
+            pmt(){
+                $("#fullscreen").show();
+                let svg = document.getElementById("tree");
+                if (svg != null || svg !=undefined){
+                    var div = document.getElementById("table");
+                    div.removeChild(svg);
+                }
+                let _this = this;
+                let postData = {
+                    name: _this.selectName,
+                }
+                console.log(postData);
+                var url = "/page/deeds/getDeedsNodRelationByName";
+                $.ajax({
+                    type: "get",
+                    url: url,
+                    data: postData,
+                    success: function (res) {
+                        console.log(res);
+                        if (res.code === '200') {
+                            _this.linksNode=res.data;
+                            console.log(_this.linksNode);
+                            let svg = document.getElementById("svg");
+                            if (svg != null || svg !=undefined){
+                                document.body.removeChild(svg);
+                            }
+                            _this.getListNode();
+                        }
+                    },
+                    error: function () {
+                        _this.$message.error('服务器错误');
+                    }
+                });
+            },
+            bzt(){
+                $("#fullscreen").hide();
+                let svg1 = document.getElementById("tree");
+                if (svg1 != null || svg1 != undefined){
+                    var div = document.getElementById("table");
+                    div.removeChild(svg1);
+                }
+                var div = document.getElementById("table");
+                var div2 = document.createElement("div");
+                div2.setAttribute("class","tree");
+                div2.setAttribute("id","tree");
+                div.appendChild(div2);
+                let svg = document.getElementById("svg");
+                if (svg != null || svg !=undefined){
+                    document.body.removeChild(svg);
+                }
+                let _this = this;
+                let postData = {
+                    name: _this.selectName,
+                }
+                var url = "/page/deeds/getTreeDeedsNodRelationByName";
+                $.ajax({
+                    type: "get",
+                    url: url,
+                    data: postData,
+                    success: function (res) {
+                        console.log(res);
+                        if (res.code === '200') {
+                            _this.json=res.data;
+                            _this.getHerListNode();
+                        }
+                    },
+                    error: function () {
+                        _this.$message.error('服务器错误');
+                    }
+                });
             },
 
             collectUrl(){
@@ -1561,18 +1851,14 @@
                     str+="?";
                     str+="type="+this.type;
                     str+="&paramName="+this.paramName;
-                    str+="&paramLikeName="+this.paramLikeName;
                     this.linkUrl = str;
                     console.log(this.linkUrl);
                 }
             },
             collect(){
-                var title = this.type+"-人物浏览";
+                var title = this.type+"-九九八十一难";
                 if(this.paramName!==''){
                     title+=': '+this.paramName;
-                }
-                if(this.paramLikeName!==''){
-                    title+=': '+this.paramLikeName;
                 }
                 let postData = {
                     userId:this.userInfo.id,
@@ -1589,7 +1875,7 @@
                     contentType : "application/json",
                     success: function(res){
                         if(res.code==="200"){
-                           _this.collectFlag = false;
+                            _this.collectFlag = false;
                             _this.$message({
                                 message: '添加收藏成功！',
                                 type: 'success'
@@ -1668,8 +1954,7 @@
                 });
 
             },
-        },
-
+        }
     })
 
 </script>

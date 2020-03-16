@@ -5,6 +5,7 @@ import com.ccsu.feng.test.domain.node.DeedsNode;
 import com.ccsu.feng.test.domain.node.PersonNode;
 import com.ccsu.feng.test.domain.node.PlaceNode;
 import com.ccsu.feng.test.domain.vo.DeedsVO;
+import com.ccsu.feng.test.enums.LoginTime;
 import com.ccsu.feng.test.enums.RelationsType;
 import com.ccsu.feng.test.repository.DeedsNodeRepository;
 import com.ccsu.feng.test.repository.PlaceNodeRepository;
@@ -12,15 +13,19 @@ import com.ccsu.feng.test.service.node.IBaseRelationshipService;
 import com.ccsu.feng.test.service.node.IDeedsNodeService;
 import com.ccsu.feng.test.service.node.IPlaceNodeService;
 import com.ccsu.feng.test.utils.PageResult;
+import com.ccsu.feng.test.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.ListUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author admin
@@ -43,6 +48,8 @@ public class DeedsNodeServiceImpl implements IDeedsNodeService {
 
     @Autowired
     IBaseRelationshipService relationshipService;
+    @Autowired
+    RedisUtil redisUtil;
 
 
     @Override
@@ -154,6 +161,24 @@ public class DeedsNodeServiceImpl implements IDeedsNodeService {
         log.info("pageIndex->{},pageSize->{}", pageIndex, pageSize);
         return new PageResult<>(pageIndex, pageSize, deedsNodeRepository.getDeedsNodeCountByName(type, name), list);
     }
+
+
+    @Override
+    public List<String> getDeedsNodeByType(String type) {
+
+        List<String>  hget = (List<String>) redisUtil.hget("DeedsNode:", type);
+        if (!ListUtils.isEmpty(hget)){
+            return  hget;
+        }
+        List<DeedsNode> listDeedsNodeByType = deedsNodeRepository.getListDeedsNodeByType(type);
+        if (ListUtils.isEmpty(listDeedsNodeByType)) {
+            return null;
+        }
+        List<String> strings = listDeedsNodeByType.stream().map(x -> x.getName()).collect(Collectors.toList());
+        redisUtil.hset("DeedsNode:",type,strings, LoginTime.SAVE_LOGIN_TIME.getTime());
+        return null;
+    }
+
 
     private BaseRelationship addaddDeedsPlaceRelationship(DeedsNode startDeedsNode, String endName,String  type) {
         PlaceNode endPlaceNode = placeNodeService.getPlaceNodeByName(endName);

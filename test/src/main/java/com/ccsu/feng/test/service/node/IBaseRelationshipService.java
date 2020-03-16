@@ -2,8 +2,10 @@ package com.ccsu.feng.test.service.node;
 
 import com.ccsu.feng.test.domain.base.BaseNode;
 import com.ccsu.feng.test.domain.base.BaseRelationship;
+import com.ccsu.feng.test.domain.node.DeedsNode;
+import com.ccsu.feng.test.domain.vo.DeedsTreeVO;
 import com.ccsu.feng.test.domain.vo.ListRelationVO;
-import com.ccsu.feng.test.domain.vo.PersonNodeRelationsListVO;
+import com.ccsu.feng.test.domain.vo.NodeRelationsListVO;
 import com.ccsu.feng.test.utils.PageResult;
 
 import java.util.List;
@@ -86,17 +88,33 @@ public interface IBaseRelationshipService {
     PageResult<ListRelationVO> getListRelationByPage(int pageIndex, int pageSize,String type);
 
     /**
-     *
+     *获取人物关系
      * @param type
      * @return
      */
-    List<PersonNodeRelationsListVO> getPersonNodRelationByType(String type);
+    List<NodeRelationsListVO> getPersonNodRelationByType(String type);
 
+
+    /**
+     *获取武器关系
+     * @param type
+     * @return
+     */
+    List<NodeRelationsListVO> getWeaponNodRelationByType(String type);
 
     /**
      *
      * @param name
      * @return
      */
-    List<PersonNodeRelationsListVO>  getPersonNodRelationByName(String name);
+    List<NodeRelationsListVO>  getPersonNodRelationByName(String name);
+
+
+    List<NodeRelationsListVO>  getWeaponNodeRelationByName(String name);
+
+
+    List<NodeRelationsListVO>  getDeedsNodRelationByName(String name);
+
+    DeedsTreeVO getTreeDeedsNodRelationByName(String name);
+
 }

@@ -20,8 +20,7 @@ public class PersonVO  {
     private String content;
     private String picture;
     private String type;
-    private List<String> pictures =new ArrayList<>(1);
-
+    private List<String> pictures=new ArrayList<>(1);
 
     public PersonVO(PersonNode personNode){
         this.setId(personNode.getId());
@@ -33,4 +32,8 @@ public class PersonVO  {
         this.setPicture(personNode.getPicture());
         this.pictures.add(personNode.getPicture());
     }
+    public  PersonVO(){
+
+    }
+
 }

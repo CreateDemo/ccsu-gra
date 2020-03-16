@@ -34,4 +34,8 @@ public class DeedsVO  {
         this.setPicture(deedsNode.getPicture());
         this.pictures.add(deedsNode.getPicture());
     }
+
+    public DeedsVO(){
+
+    }
 }

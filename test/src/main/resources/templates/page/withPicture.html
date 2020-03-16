@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>人物关系</title>
+    <div id="title">
+    <title>三国演义</title></div>
     <link rel="stylesheet" type="text/css" href="../../common/statics/css/navperson.css"/>
     <link rel="stylesheet" type="text/css" href="../../common/css/person.css"/>
     <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
@@ -103,6 +104,53 @@
         font-size: 30px;
         margin-left: 140px;
         content: "\e6d8";
+        cursor: pointer;
+    }
+    #tip1{
+        height:35px;
+        background-color:#fff;
+        padding-left:10px;
+        padding-right:10px;
+        border:1px solid #969696;
+        position:absolute;
+        font-size:12px;
+        right:10px;
+        top:100px;
+        border-radius:3px;
+        line-height:35px;
+    }
+
+    #tip1 input[type='button']{
+        height:22px;
+        line-height:22px;
+        outline:none;
+        text-align:center;
+        padding-left:5px;
+        padding-right:5px;
+        color:#FFF;
+        background-color:#0D9BF2;
+        border:0;
+        border-radius: 3px;
+        margin-top:8px;
+        margin-left:5px;
+        cursor:pointer;
+        margin-right:10px;
+    }
+    .el-icon-star-off:before {
+        top: 20px;
+        position: absolute;
+        font-size: 40px;
+        content: "\e717";
+        margin-left: -10px;
+        cursor: pointer;
+    }
+
+    .el-icon-star-on:before {
+        top: 20px;
+        position: absolute;
+        font-size: 40px;
+        content: "\e797";
+        margin-left: -10px;
         cursor: pointer;
     }
 </style>
@@ -600,6 +648,11 @@
   </el-dropdown-menu>
 </el-dropdown></span>
 
+                    <i  v-if="collectFlag" title="添加收藏"  @click="collect()" class="el-icon-star-off"></i>
+
+                    <i  v-if="!collectFlag" title="取消收藏" @click="cancelCollect()" class="el-icon-star-on"></i>
+
+
                 </div>
             </div>
 
@@ -609,13 +662,18 @@
     <!--轮播开始-->
     <div class="overall">
         <div>
-            <img    class="drag" id="img" src="../../common/image/sanDetail.png" alt @mousewheel="rollImg(this)" ref="bigImage"
-                 style="width: 600px; height:500px;position: fixed;left: 300px;top: 60px;
+            <img    class="drag" id="img" :src="img" alt @mousewheel="rollImg(this)" ref="bigImage"
+                 style="width: 600px; height:600px;position: fixed;left: 300px;top: 60px;
                  cursor: pointer ;" v-drag="flag"  >
         </div>
 
     </div>
 
+    <div id="tip1" v-if="type=='三国鼎立' || type=='大唐疆域'">
+        <input type="button" value="简洁" @click="pmt()"/>
+        <input type="button" value="标准" @click="bzt()"/>
+        <input type="button" value="地形" @click="zst()"/>
+    </div>
 
 
 </div>
@@ -650,7 +708,7 @@
     });
 
     var app = new Vue({
-        el: '#table',
+        el: "#table",
         data: {
             originPicture: '../../common/statics/images/login_i.png',
             userInfo: {
@@ -662,7 +720,6 @@
             dialogFormVisible: false,
             loading: 'false',
             imgTemp: '',
-            type: '',
             personList: [],
             linksNode:[],
             personName:'',
@@ -671,14 +728,20 @@
             showPersonDtail:'',
             flag:true,
             input:'',
-            type:'西游记',
             flag:true,
+            type:'',
+            img:'',
+            linkUrl:'',
+            collectFlag:true,
 
         },
         mounted() {
         },
         created() {
+            this.getParam();
+            this.selectImg()
             this.getPageUser();
+            this.selectCollect();
 
         },
         methods: {
@@ -689,7 +752,7 @@
                 $.ajax({
                     type: "get",
                     url: url,
-                    // data: ,
+                    async:false,
                     success: function (res) {
                         if (res.code === "200") {
                             console.log(_this.userInfo)
@@ -877,7 +940,7 @@
                   */
                 zoom += event.wheelDelta / 10;
                 /* 最小范围 和 最大范围 的图片缩放尺度 */
-                if (zoom >= 50 && zoom <350) {
+                if (zoom >= 50 && zoom <650) {
                     this.$refs.bigImage.style.zoom = zoom + "%";
                 }
                 return false;
@@ -886,7 +949,7 @@
                 var zoom = parseInt(this.$refs.bigImage.style.zoom) || 100;
                console.log(zoom)
                 zoom+=10;
-                if (zoom >= 50 && zoom <350) {
+                if (zoom >= 50 && zoom <650) {
                     this.$refs.bigImage.style.zoom = zoom + "%";
                 }
             },
@@ -894,10 +957,172 @@
                 var zoom = parseInt(this.$refs.bigImage.style.zoom) || 100;
                 console.log(zoom)
                 zoom-=10;
-                if (zoom >= 50 && zoom <350) {
+                if (zoom >= 50 && zoom <650) {
                     this.$refs.bigImage.style.zoom = zoom + "%";
                 }
             },
+            getParam() {
+                this.linkUrl= location.href;
+                this.linkUrl= decodeURI(this.linkUrl);
+                let url = location.search; //获取url中"?"符后的字串
+                if (url.indexOf("?") != -1) {
+                    let str = url.substr(1);
+                    let strs = str.split("&");
+                    this.type = decodeURIComponent(strs[0].replace("type=", ""));
+                    console.log(this.type);
+
+                }
+            },
+            selectImg(){
+              if (this.type === "三国详图"){
+                  this.img="../../common/image/sanDetail.png";
+              }
+              if (this.type === "三国鼎立"){
+                  this.img="../../common/image/sanDing.jpg";
+              }
+              if (this.type==="大唐疆域"){
+                  this.img="http://img.sdmzh.com.cn/xyj/tc3.jpg";
+              }
+              if(this.type === "起义地图"){
+                  this.img ="http://img.sdmzh.com.cn/108/sjqy.jpg";
+              }
+              if(this.type==="北宋疆域"){
+                  this.img = "http://img.sdmzh.com.cn/108/bs.jpg";
+              }
+              if (this.type==="大观圆图"){
+                  this.img = "http://img.sdmzh.com.cn/hlm/zst.gif";
+              }
+                if (this.type==="贾府平面图"){
+                    this.img = "http://img.sdmzh.com.cn/hlm/jfpm.jpg";
+                }
+
+            },
+            pmt(){
+                if (this.type==="大唐疆域"){
+                    this.img="http://img.sdmzh.com.cn/xyj/tc3.jpg";
+                }
+                if (this.type === "三国鼎立"){
+                    this.img="http://img.sdmzh.com.cn/sgyy/sgdl0.jpg";
+                }
+
+
+            },
+            bzt(){
+
+                if (this.type==="大唐疆域"){
+                    this.img="http://img.sdmzh.com.cn/xyj/tc2.jpg";
+                }
+                if (this.type === "三国鼎立"){
+                    this.img="http://img.sdmzh.com.cn/sgyy/sgdl.jpg";
+                }
+
+            },
+            zst(){
+                if (this.type==="大唐疆域"){
+                    this.img="http://img.sdmzh.com.cn/xyj/tc1.jpg";
+                }
+                if (this.type === "三国鼎立"){
+                    this.img="http://img.sdmzh.com.cn/sgyy/sgdl1.jpg";
+                }
+            },
+
+            collect(){
+                var title ="地图浏览-"+this.type;
+                let postData = {
+                    userId:this.userInfo.id,
+                    linkUrl:this.linkUrl,
+                    title:title,
+                };
+                let _this =this;
+                var url = "/page/collect/add";
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    data: JSON.stringify(postData),
+                    dataType:"json",
+                    contentType : "application/json",
+                    success: function(res){
+                        if(res.code==="200"){
+                            _this.collectFlag = false;
+                            _this.$message({
+                                message: '添加收藏成功！',
+                                type: 'success'
+                            });
+                            return;
+                        }
+                        _this.$message.error('添加收藏失败');
+                    },
+                    error: function () {
+                        _this.$message.error('服务器错误！');
+                    }
+                });
+
+            },
+            cancelCollect(){
+                let postData = {
+                    userId:this.userInfo.id,
+                    linkUrl:this.linkUrl,
+                };
+                let _this =this;
+                var url = "/page/collect/cancel";
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    data: JSON.stringify(postData),
+                    dataType:"json",
+                    contentType : "application/json",
+                    success: function(res){
+                        if(res.code==="200"){
+                            _this.collectFlag = true;
+                            _this.$message({
+                                message: '取消收藏成功！',
+                                type: 'success'
+                            });
+                            return;
+                        }
+                        _this.$message.error('取消收藏失败');
+                    },
+                    error: function () {
+                        _this.$message.error('服务器错误！');
+                    }
+                });
+
+
+            },
+            selectCollect(){
+                this.linkUrl= decodeURI(this.linkUrl);
+                console.log(this.userInfo);
+                console.log(this.userInfo.id);
+                console.log(this.linkUrl);
+                if(this.userInfo.id===''){
+                    return;
+                }
+                let postData = {
+                    userId:this.userInfo.id,
+                    linkUrl:this.linkUrl,
+                };
+                let _this =this;
+                var url = "/page/collect/select";
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    data: JSON.stringify(postData),
+                    dataType:"json",
+                    contentType : "application/json",
+                    success: function(res){
+                        if(res.code==="200"){
+                            _this.collectFlag = false;
+                        }else {
+                            _this.collectFlag = true;
+                        }
+                    },
+                    error: function () {
+                        _this.$message.error('服务器错误！');
+                    }
+                });
+
+            },
+
 
         }
     })

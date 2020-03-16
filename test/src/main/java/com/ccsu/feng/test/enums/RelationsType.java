@@ -24,12 +24,12 @@ public enum RelationsType {
     /**
      * 事件包含哪些人物，一对多
      */
-    DEEDS_REF_PERSON("含有"),
+    DEEDS_REF_PERSON("涉及人员"),
 
     /**
      * 事件属于那个地点的。一对一
      */
-    DEEDS_REF_PLACE("属于");
+    DEEDS_REF_PLACE("发生于");
 
 //
 //    APPRENTICE("徒弟"),

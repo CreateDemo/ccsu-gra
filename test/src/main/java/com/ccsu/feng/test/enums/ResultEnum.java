@@ -21,8 +21,8 @@ public enum ResultEnum {
     USER_NOT_LOGIN("10008","用户没有登录"),
     ACCESS_LIMIT_REACHED("10009","使用次数已达上线"),
     USER_AND_PASSWORD_FAIL("10010","用户名或密码错误！"),
-    NOT_DATA("10010","数据为空!");
-
+    NOT_DATA("10011","数据为空!"),
+    COLLECT_IS_EMPTY("10012","收藏夹为空");
 
     private String code;
 

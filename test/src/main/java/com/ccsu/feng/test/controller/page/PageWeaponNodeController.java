@@ -1,10 +1,11 @@
 package com.ccsu.feng.test.controller.page;
 
 import com.ccsu.feng.test.domain.vo.NodeRelationsListVO;
-import com.ccsu.feng.test.domain.vo.PersonVO;
+import com.ccsu.feng.test.domain.vo.WeaponVO;
 import com.ccsu.feng.test.enums.ResultEnum;
 import com.ccsu.feng.test.service.node.IBaseRelationshipService;
 import com.ccsu.feng.test.service.node.IPersonNodeService;
+import com.ccsu.feng.test.service.node.IWeaponNodeService;
 import com.ccsu.feng.test.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,20 +17,24 @@ import java.util.List;
 
 /**
  * @author admin
- * @create 2020-03-07-18:07
+ * @create 2020-03-13-15:22
  */
 @RestController
-@RequestMapping("/page/personNode")
-public class PagePersonNodeController {
+@RequestMapping("/page/weapon")
+public class PageWeaponNodeController {
     @Autowired
     IPersonNodeService iPersonNodeService;
 
     @Autowired
     IBaseRelationshipService iBaseRelationshipService;
 
-    @GetMapping("/getPersonNodeByType")
-    public Result<List<String>> getPersonNodeByType(String type) {
-        List<String> node = iPersonNodeService.getPersonNodeByType(type);
+    @Autowired
+    IWeaponNodeService iWeaponNodeService;
+
+
+    @GetMapping("/getWeaponNodeByType")
+    public Result<List<String>> getWeaponNodeByType(String type) {
+        List<String> node = iWeaponNodeService.getWeaponNodeByType(type);
         if (!ListUtils.isEmpty(node)) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
@@ -37,9 +42,10 @@ public class PagePersonNodeController {
         }
     }
 
-    @GetMapping("/getPersonNodRelationByType")
-    public Result<List<NodeRelationsListVO>> getPersonNodRelationByType(String type) {
-        List<NodeRelationsListVO> node = iBaseRelationshipService.getPersonNodRelationByType(type);
+
+    @GetMapping("/getWeaponNodRelationByType")
+    public Result<List<NodeRelationsListVO>> getWeaponNodRelationByType(String type) {
+        List<NodeRelationsListVO> node = iBaseRelationshipService.getWeaponNodRelationByType(type);
         if (!ListUtils.isEmpty(node)) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
@@ -48,9 +54,9 @@ public class PagePersonNodeController {
     }
 
 
-    @GetMapping("/getPersonNodRelationByName")
-    public Result<List<NodeRelationsListVO>> getPersonNodRelationByName(String name) {
-        List<NodeRelationsListVO> node = iBaseRelationshipService.getPersonNodRelationByName(name);
+    @GetMapping("/getWeaponNodRelationByName")
+    public Result<List<NodeRelationsListVO>> getWeaponNodRelationByName(String name) {
+        List<NodeRelationsListVO> node = iBaseRelationshipService.getWeaponNodeRelationByName(name);
         if (!ListUtils.isEmpty(node)) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
@@ -58,25 +64,15 @@ public class PagePersonNodeController {
         }
     }
 
-    @GetMapping("/getPersonNodeByName")
-    public Result<PersonVO> getPersonNodeByName(String name) {
-        PersonVO node = iPersonNodeService.getPersonRelationByName(name);
-        if (node != null) {
-            return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
-        } else {
-            return Result.error(ResultEnum.ERROR.getCode(), ResultEnum.ERROR.getMsg());
-        }
-    }
 
-    @GetMapping("/getPersonNodeLikeByName")
-    public Result<List<NodeRelationsListVO>> getPersonNodeLikeByName(String name, String relationType) {
-        List<NodeRelationsListVO> node = iPersonNodeService.getPersonNodeLikeByName(name, relationType);
+    @GetMapping("/getWeaponNodeLikeByName")
+    public Result<List<NodeRelationsListVO>> getWeaponNodeLikeByName(String name, String relationType) {
+        List<NodeRelationsListVO> node = iWeaponNodeService.getWeaponNodeLikeByName(name, relationType);
         if (!ListUtils.isEmpty(node)) {
             return Result.build(ResultEnum.SUCCESS.getCode(), ResultEnum.SUCCESS.getMsg(), node);
         } else {
             return Result.error(ResultEnum.NOT_DATA.getCode(), ResultEnum.NOT_DATA.getMsg());
         }
     }
-
 
 }

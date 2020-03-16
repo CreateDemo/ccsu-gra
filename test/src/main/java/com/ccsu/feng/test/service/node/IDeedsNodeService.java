@@ -93,4 +93,6 @@ public interface IDeedsNodeService {
 
 
     PageResult<DeedsVO> getListDeedsNodeByPageAndName(String name, int pageIndex, int pageSize,String type);
+
+    List<String> getDeedsNodeByType(String type);
 }

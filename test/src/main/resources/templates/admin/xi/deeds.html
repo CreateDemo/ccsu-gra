@@ -266,10 +266,6 @@
     </el-dialog>
 
 
-
-
-
-
     <!--         修改-->
     <el-dialog title="修改" :visible.sync="dialogFormVisible">
         <el-form :model="editDetail">
@@ -408,11 +404,13 @@
                     picture:this.imageUrl,
                     name:this.addDetail.name,
                     alias:this.addDetail.alias,
+                    origin:this.addDetail.origin,
+                    result:this.addDetail.result,
                     character:this.addDetail.character,
                     content:this.addDetail.content,
                     type:this.type
                 };
-
+                console.log(postData);
                 let _this =this;
                 var url = "/admin/deedsNode/addDeedsNode";
                 $.ajax({
@@ -486,10 +484,13 @@
                 this.editDetail = {
                     picture:row.picture,
                     id:row.id,
+                    origin:row.origin,
+                    result:row.result,
                     name:row.name ,
                     alias: row.alias,
                     character: row.character,
-                    content: row.content
+                    content: row.content,
+                    type:this.type,
                 }
                 this.dialogFormVisible=true;
 

@@ -2,7 +2,7 @@ package com.ccsu.feng.test.service.node;
 
 import com.ccsu.feng.test.domain.base.BaseRelationship;
 import com.ccsu.feng.test.domain.node.PersonNode;
-import com.ccsu.feng.test.domain.vo.PersonNodeRelationsListVO;
+import com.ccsu.feng.test.domain.vo.NodeRelationsListVO;
 import com.ccsu.feng.test.domain.vo.PersonVO;
 import com.ccsu.feng.test.utils.PageResult;
 
@@ -130,9 +130,9 @@ public interface IPersonNodeService {
      * @param type
      * @return
      */
-    List<PersonVO> getPersonNodeByType(String type);
+    List<String> getPersonNodeByType(String type);
 
 
-    List <PersonNodeRelationsListVO> getPersonNodeLikeByName(String name, String type);
+    List <NodeRelationsListVO> getPersonNodeLikeByName(String name, String type);
 
 }

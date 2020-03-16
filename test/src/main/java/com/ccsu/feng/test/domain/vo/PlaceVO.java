@@ -28,4 +28,7 @@ public class PlaceVO{
         this.setContent(placeNode.getContent());
         this.pictures.add(placeNode.getPicture());
     }
+    public PlaceVO(){
+
+    }
 }

@@ -33,4 +33,6 @@ public interface IBaseNodeService {
 
 
     PageResult<ListRelationVO> findBaseRelationshipByNameByPage(String name, int pageIndex, int pageSize);
+
+    Object getShowBaseNodeByName(String name);
 }

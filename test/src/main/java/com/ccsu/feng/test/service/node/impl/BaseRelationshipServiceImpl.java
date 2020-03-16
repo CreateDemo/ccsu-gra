@@ -6,19 +6,22 @@ import com.ccsu.feng.test.domain.node.DeedsNode;
 import com.ccsu.feng.test.domain.node.PersonNode;
 import com.ccsu.feng.test.domain.node.PlaceNode;
 import com.ccsu.feng.test.domain.node.WeaponNode;
+import com.ccsu.feng.test.domain.relation.RelationType;
+import com.ccsu.feng.test.domain.vo.DeedsTreeVO;
 import com.ccsu.feng.test.domain.vo.ListRelationVO;
-import com.ccsu.feng.test.domain.vo.PersonNodeRelationsListVO;
+import com.ccsu.feng.test.domain.vo.NodeRelationsListVO;
+import com.ccsu.feng.test.enums.LoginTime;
+import com.ccsu.feng.test.enums.RelationsType;
 import com.ccsu.feng.test.repository.*;
 import com.ccsu.feng.test.service.node.IBaseRelationshipService;
 import com.ccsu.feng.test.utils.PageResult;
+import com.ccsu.feng.test.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.ListUtils;
+import sun.rmi.runtime.Log;
 
-import javax.xml.bind.SchemaOutputResolver;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +49,9 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
 
     @Autowired
     BaseNodeRepository baseNodeRepository;
+    
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public BaseRelationship addRelationship(BaseRelationship relationship) {
@@ -169,51 +175,221 @@ public class BaseRelationshipServiceImpl implements IBaseRelationshipService {
     }
 
     @Override
-    public List<PersonNodeRelationsListVO> getPersonNodRelationByType(String type) {
+    public List<NodeRelationsListVO> getPersonNodRelationByType(String type) {
+        List<NodeRelationsListVO> listVOSRedis = (List<NodeRelationsListVO>) redisUtil.hget("PersonRelation:", type);
+        if (!ListUtils.isEmpty(listVOSRedis)){
+            return  listVOSRedis;
+        }
         List<BaseRelationship> all = (List<BaseRelationship>) relationshipRepository.findAll();
-        List<BaseRelationship> collect = all.stream().filter(x -> type.equals(x.getType()) && (x.getStart() instanceof PersonNode))
+        List<BaseRelationship> collect = all.stream().filter(x -> type.equals(x.getType()) &&
+                (x.getStart() instanceof PersonNode) && ( x.getEnd() instanceof PersonNode))
                 .collect(Collectors.toList());
 
-        List<PersonNodeRelationsListVO> listVOS = new ArrayList<>(collect.size());
+        List<NodeRelationsListVO> listVOS = new ArrayList<>(collect.size());
         collect.forEach(x -> {
-            PersonNodeRelationsListVO personNodeRelationsListVO = new PersonNodeRelationsListVO();
-            personNodeRelationsListVO.setSource(x.getStart().getName());
-            personNodeRelationsListVO.setRelationName(x.getName());
-            personNodeRelationsListVO.setTarget(x.getEnd().getName());
-            listVOS.add(personNodeRelationsListVO);
+            NodeRelationsListVO nodeRelationsListVO = new NodeRelationsListVO();
+            nodeRelationsListVO.setSource(x.getStart().getName());
+            nodeRelationsListVO.setRelationName(x.getName());
+            nodeRelationsListVO.setTarget(x.getEnd().getName());
+            listVOS.add(nodeRelationsListVO);
         });
+        redisUtil.hset("PersonRelation:",type,listVOS, LoginTime.SAVE_LOGIN_TIME.getTime());
         return listVOS;
     }
 
     @Override
-    public List<PersonNodeRelationsListVO> getPersonNodRelationByName(String name) {
+    public List<NodeRelationsListVO> getWeaponNodRelationByType(String type) {
+        List<NodeRelationsListVO> listVOSRedis = (List<NodeRelationsListVO>) redisUtil.hget("WeaponRelation:", type);
+        if (!ListUtils.isEmpty(listVOSRedis)){
+            return  listVOSRedis;
+        }
+        List<BaseRelationship> all = (List<BaseRelationship>) relationshipRepository.findAll();
+        List<BaseRelationship> collect = all.stream().filter(x -> type.equals(x.getType()) &&
+                (x.getStart() instanceof WeaponNode))
+                .collect(Collectors.toList());
+        List<NodeRelationsListVO> listVOS = new ArrayList<>(collect.size());
+        collect.forEach(x -> {
+            NodeRelationsListVO nodeRelationsListVO = new NodeRelationsListVO();
+            nodeRelationsListVO.setSource(x.getStart().getName());
+            nodeRelationsListVO.setRelationName(x.getName());
+            nodeRelationsListVO.setTarget(x.getEnd().getName());
+            listVOS.add(nodeRelationsListVO);
+        });
+        redisUtil.hset("WeaponRelation:",type,listVOS, LoginTime.SAVE_LOGIN_TIME.getTime());
+        return listVOS;
+    }
+
+    @Override
+    public List<NodeRelationsListVO> getPersonNodRelationByName(String name) {
+        List<NodeRelationsListVO> listVOSR = (List<NodeRelationsListVO>) redisUtil.hget("PersonRealtionByName:", name);
+        if (!ListUtils.isEmpty(listVOSR)){
+            return  listVOSR;
+        }
         PersonNode personNodeByName = personNodeRepository.getPersonNodeByName(name);
-        List<PersonNodeRelationsListVO> listVOS = new ArrayList<>();
+        List<NodeRelationsListVO> listVOS = new ArrayList<>();
         if (personNodeByName.getRelationships() == null) {
-            PersonNodeRelationsListVO personNodeRelationsListVO = new PersonNodeRelationsListVO();
-            personNodeRelationsListVO.setSource(personNodeByName.getName());
-            personNodeRelationsListVO.setTarget(personNodeByName.getName());
-            listVOS.add(personNodeRelationsListVO);
+            NodeRelationsListVO nodeRelationsListVO = new NodeRelationsListVO();
+            nodeRelationsListVO.setSource(personNodeByName.getName());
+            nodeRelationsListVO.setTarget(personNodeByName.getName());
+            listVOS.add(nodeRelationsListVO);
             return listVOS;
         }
         Set<BaseRelationship> relationships = personNodeByName.getRelationships();
         for (BaseRelationship baseRelationship : relationships) {
-            PersonNodeRelationsListVO personNodeRelationsListVO = new PersonNodeRelationsListVO();
-            personNodeRelationsListVO.setRelationName(baseRelationship.getName());
-            personNodeRelationsListVO.setSource(personNodeByName.getName());
-            personNodeRelationsListVO.setTarget(baseRelationship.getEnd().getName());
-            listVOS.add(personNodeRelationsListVO);
-            if (baseRelationship.getEnd().getRelationships() != null) {
-                for (BaseRelationship baseRelationship1 : baseRelationship.getEnd().getRelationships()) {
-                    PersonNodeRelationsListVO personNodeRelationsListVO1 = new PersonNodeRelationsListVO();
-                    personNodeRelationsListVO1.setRelationName(baseRelationship1.getName());
-                    personNodeRelationsListVO1.setSource(baseRelationship1.getName());
-                    personNodeRelationsListVO1.setTarget(baseRelationship1.getEnd().getName());
-                    listVOS.add(personNodeRelationsListVO1);
-                }
+            if (baseRelationship.getEnd() instanceof PersonNode){
+                NodeRelationsListVO nodeRelationsListVO = new NodeRelationsListVO();
+                nodeRelationsListVO.setRelationName(baseRelationship.getName());
+                nodeRelationsListVO.setSource(personNodeByName.getName());
+                nodeRelationsListVO.setTarget(baseRelationship.getEnd().getName());
+                listVOS.add(nodeRelationsListVO);
             }
+
         }
+        redisUtil.hset("PersonRealtionByName:",name,listVOS,LoginTime.SAVE_LOGIN_TIME.getTime());
         return listVOS;
+    }
+
+
+    @Override
+    public List<NodeRelationsListVO> getWeaponNodeRelationByName(String name) {
+        List<NodeRelationsListVO> listVOSR = (List<NodeRelationsListVO>) redisUtil.hget("WeaponRealtionByName:", name);
+        if (!ListUtils.isEmpty(listVOSR)){
+            return  listVOSR;
+        }
+        WeaponNode weaponByName = weaponNodeRepository.getWeaponByName(name);
+        List<NodeRelationsListVO> listVOS = new ArrayList<>();
+        if (weaponByName.getRelationships() == null) {
+            NodeRelationsListVO nodeRelationsListVO = new NodeRelationsListVO();
+            nodeRelationsListVO.setSource(weaponByName.getName());
+            nodeRelationsListVO.setTarget(weaponByName.getName());
+            listVOS.add(nodeRelationsListVO);
+            return listVOS;
+        }
+        Set<BaseRelationship> relationships = weaponByName.getRelationships();
+        for (BaseRelationship baseRelationship : relationships) {
+                NodeRelationsListVO nodeRelationsListVO = new NodeRelationsListVO();
+                nodeRelationsListVO.setRelationName(baseRelationship.getName());
+                nodeRelationsListVO.setSource(weaponByName.getName());
+                nodeRelationsListVO.setTarget(baseRelationship.getEnd().getName());
+                listVOS.add(nodeRelationsListVO);
+        }
+        redisUtil.hset("WeaponRealtionByName:",name,listVOS,LoginTime.SAVE_LOGIN_TIME.getTime());
+        return listVOS;
+    }
+
+
+
+    @Override
+    public List<NodeRelationsListVO> getDeedsNodRelationByName(String name) {
+
+        List<NodeRelationsListVO> hget = (List<NodeRelationsListVO> )redisUtil.hget("DeedsRelationByName:",name);
+        if(!ListUtils.isEmpty(hget)){
+            return hget;
+        }
+        DeedsNode deedsNodeByName = deedsNodeRepository.getDeedsNodeByName(name);
+        List<NodeRelationsListVO> listVOS = new ArrayList<>();
+        if (deedsNodeByName.getRelationships() == null) {
+            NodeRelationsListVO nodeRelationsListVO = new NodeRelationsListVO();
+            nodeRelationsListVO.setSource(deedsNodeByName.getName());
+            nodeRelationsListVO.setTarget(deedsNodeByName.getName());
+            listVOS.add(nodeRelationsListVO);
+            return listVOS;
+        }
+        //事件起因
+        NodeRelationsListVO nodeRelationsListVOOrigin = new NodeRelationsListVO();
+        nodeRelationsListVOOrigin.setSource(deedsNodeByName.getName());
+        nodeRelationsListVOOrigin.setRelationName("事件起因");
+        nodeRelationsListVOOrigin.setTarget("起因："+deedsNodeByName.getOrigin());
+        listVOS.add(nodeRelationsListVOOrigin);
+        //事件结果
+        NodeRelationsListVO nodeRelationsListVOResult = new NodeRelationsListVO();
+        nodeRelationsListVOResult.setSource(deedsNodeByName.getName());
+        nodeRelationsListVOResult.setRelationName("事件结果");
+        nodeRelationsListVOResult.setTarget("结果："+deedsNodeByName.getResult());
+        listVOS.add(nodeRelationsListVOResult);
+
+        //涉及人员-发生地点
+        Set<BaseRelationship> relationships = deedsNodeByName.getRelationships();
+        for (BaseRelationship baseRelationship : relationships) {
+            NodeRelationsListVO nodeRelationsListVO = new NodeRelationsListVO();
+            nodeRelationsListVO.setRelationName(baseRelationship.getName());
+            nodeRelationsListVO.setSource(deedsNodeByName.getName());
+            nodeRelationsListVO.setTarget(baseRelationship.getEnd().getName());
+            listVOS.add(nodeRelationsListVO);
+        }
+
+      redisUtil.hset("DeedsRelationByName:",name,listVOS,LoginTime.SAVE_LOGIN_TIME.getTime());
+        return listVOS;
+    }
+
+
+    @Override
+    public DeedsTreeVO getTreeDeedsNodRelationByName(String name) {
+        DeedsTreeVO deedsTreeVO =(DeedsTreeVO) redisUtil.hget("DeedsTree:",name);
+        if (deedsTreeVO!=null){
+            return deedsTreeVO;
+        }
+
+        DeedsNode deedsNodeByName = deedsNodeRepository.getDeedsNodeByName(name);
+        if (deedsNodeByName.getRelationships() == null) {
+            DeedsTreeVO treeVO =new DeedsTreeVO();
+            treeVO.setName(deedsNodeByName.getName());
+            return treeVO;
+        }
+        // 根节点
+        DeedsTreeVO treeVO =new DeedsTreeVO();
+        treeVO.setName(deedsNodeByName.getName());
+        //事件起因
+        DeedsTreeVO treeVO1 =new DeedsTreeVO();
+        treeVO1.setName("事件起因");
+        treeVO1.setParent(deedsNodeByName.getName());
+        DeedsTreeVO treeVO2 =new DeedsTreeVO();
+        treeVO2.setName(deedsNodeByName.getOrigin());
+        treeVO2.setParent("事件起因");
+        treeVO1.setChildren(new ArrayList<>(Arrays.asList(treeVO2)));
+
+        //事件结果
+        DeedsTreeVO treeVO3 =new DeedsTreeVO();
+        treeVO3.setName("事件结果");
+        treeVO3.setParent(deedsNodeByName.getName());
+        DeedsTreeVO treeVO4 =new DeedsTreeVO();
+        treeVO4.setName(deedsNodeByName.getResult());
+        treeVO4.setParent("事件结果");
+        treeVO3.setChildren(new ArrayList<>(Arrays.asList(treeVO4)));
+        //加入根节点
+        treeVO.add(treeVO1);
+        treeVO.add(treeVO3);
+        //涉及人员-发生地点
+
+        Set<BaseRelationship> relationships = deedsNodeByName.getRelationships();
+
+        DeedsTreeVO treeVO7 =new DeedsTreeVO();
+        treeVO7.setName(RelationsType.DEEDS_REF_PERSON.getRelation());
+        for (BaseRelationship baseRelationship : relationships) {
+            //涉及人员
+            if (baseRelationship.getName().equals(treeVO7.getName())){
+                DeedsTreeVO treeVO5 =new DeedsTreeVO();
+                treeVO5.setParent(treeVO7.getName());
+                treeVO5.setName(baseRelationship.getEnd().getName());
+                treeVO7.add(treeVO5);
+            }else {
+                DeedsTreeVO treeVO5 =new DeedsTreeVO();
+                treeVO5.setParent(treeVO.getName());
+                treeVO5.setName(baseRelationship.getName());
+
+                DeedsTreeVO treeVO6 =new DeedsTreeVO();
+                treeVO6.setName(baseRelationship.getEnd().getName());
+                treeVO6.setParent(treeVO5.getName());
+                treeVO5.add(treeVO6);
+                treeVO.add(treeVO5);
+
+            }
+
+        }
+        treeVO.add(treeVO7);
+        redisUtil.hset("DeedsTree:",name,treeVO, LoginTime.SAVE_LOGIN_TIME.getTime());
+        return treeVO;
+
     }
 
 }

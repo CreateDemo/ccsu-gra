@@ -1,9 +1,12 @@
 package com.ccsu.feng.test.service.node;
 
 import com.ccsu.feng.test.domain.node.WeaponNode;
+import com.ccsu.feng.test.domain.vo.NodeRelationsListVO;
+import com.ccsu.feng.test.domain.vo.PersonVO;
 import com.ccsu.feng.test.domain.vo.WeaponVO;
 import com.ccsu.feng.test.utils.PageResult;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -68,4 +71,13 @@ public interface IWeaponNodeService {
 
 
     PageResult<WeaponVO> getListWeaponNodeByPageAndName(String name, int pageIndex, int pageSize,String type);
+
+    /**
+     *
+     * @param type
+     * @return
+     */
+    List<String> getWeaponNodeByType(String type);
+
+    List <NodeRelationsListVO> getWeaponNodeLikeByName(String name, String type);
 }
